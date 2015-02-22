@@ -50,8 +50,6 @@ namespace Flambe
                 tbRemarks.Left = tbItem.Left + tbItem.Width + 3;
             });
 
-            //FlambeDB.LoadDB(@"C:\Users\adashi\OneDrive\C#\Flambe\recipes.db");
-            //FlambeDB.LoadDB(@"C:\Users\adashi\Downloads\recipes2.db");
             FlambeDB.LoadDB();
 
 
@@ -76,12 +74,6 @@ namespace Flambe
                 cuisines.Add(recipe.Cuisine);
                 categories.Add(recipe.Category);
             }
-            //foreach (var recipe in FlambeDB.Select("SELECT credit, cuisine, category FROM recipes"))
-            //{
-            //    credits.Add(recipe["credit"].ToString());
-            //    cuisines.Add(recipe["cuisine"].ToString());
-            //    categories.Add(recipe["category"].ToString());
-            //}
 
             cbCredit.Items.AddRange(credits.OrderBy(c => c).ToArray());
             cbCuisine.Items.AddRange(cuisines.OrderBy(c => c).ToArray());
@@ -98,7 +90,6 @@ namespace Flambe
             FlambeDB.CloseDB();
             base.OnClosing(e);
         }
-
         #endregion
 
 
@@ -109,28 +100,32 @@ namespace Flambe
         /// <param name="query">The query to use. If blank, grab all recipes; else, the human-readable query such as "name:chicken cuisine:thai rating:>3"</param>
         private void displayRecipes(string query = null)
         {
-            const string defaultQuery = "SELECT * FROM Recipe";
-
-            if (!string.IsNullOrEmpty(query))
+            if (string.IsNullOrEmpty(query))
+            {
+                query = "SELECT * FROM Recipe";
+            }
+            else
             {
                 // try to build a query from input such as "cuisine:indian rating:4"
                 var conditions = new List<string>();
                 foreach (var term in GetSearchTerms(query))
                 {
                     if (term.Item1 == "rating")
-                        conditions.Add("rating >= " + term.Item2);
-                    else if (term.Item1 == "name")
-                        conditions.AddRange(term.Item2.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries).Select(t => "name LIKE '%" + t + "%'"));
+                    {
+                        float rating;
+                        if (float.TryParse(term.Item2, out rating))
+                            conditions.Add("rating >= " + rating.ToString());
+                    }
                     else
-                        conditions.Add(string.Format("{0} LIKE '%{1}%'", term.Item1, term.Item2));
+                    {
+                        conditions.Add(string.Format("{0} LIKE '%{1}%'", term.Item1, term.Item2.Replace("'", "''")));
+                    }
                 }
 
                 if (conditions.Count > 0)
                     query = "SELECT * FROM Recipe WHERE " + string.Join(" AND ", conditions);
             }
 
-            if (string.IsNullOrEmpty(query))
-                query = defaultQuery;
 
             lvAllRecipes.Items.Clear();
             foreach (var recipe in FlambeDB.connection.Query<Recipe>(query))
@@ -171,7 +166,13 @@ namespace Flambe
             }
 
             if (!string.IsNullOrEmpty(query))
-                yield return new Tuple<string, string>("name", query);
+            {
+                // for the remainder of terms, assign to name individually.
+                // TODO: keep enquoted values together
+                foreach (var term in query.Split(new [] {' '},  StringSplitOptions.RemoveEmptyEntries))
+                    yield return new Tuple<string, string>("name", term);
+            }
+
         }
 
         private void EditRecipe(Recipe recipe, bool switchTabs = true)
