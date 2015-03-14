@@ -24,7 +24,6 @@ namespace Flambe
             lvAllRecipes.Columns.Add("category", "Category", totalWidth / 3);
             lvAllRecipes.Columns.Add("cuisine", "Cuisine", totalWidth / 3);
 
-
             lvIngredients.View = View.Details;
             lvIngredients.HeaderStyle = ColumnHeaderStyle.Nonclickable;
             lvIngredients.Columns.Add("quantity", "Qty");
@@ -56,6 +55,9 @@ namespace Flambe
             initStatusStrip();
         }
 
+        /// <summary>
+        /// Initializes all ComboBoxes to include a set of distinct values known from the database
+        /// </summary>
         private void initComboBoxes()
         {
             var credits = new HashSet<string>();
@@ -85,7 +87,6 @@ namespace Flambe
         }
         #endregion
 
-
         #region Helpers
         /// <summary>
         /// Query the DB for recipes based on user input
@@ -107,7 +108,9 @@ namespace Flambe
                     {
                         float rating;
                         if (float.TryParse(term.Item2, out rating))
+                        {
                             conditions.Add("rating >= " + rating.ToString());
+                        }
                     }
                     else
                     {
@@ -116,7 +119,9 @@ namespace Flambe
                 }
 
                 if (conditions.Count > 0)
+                {
                     query = "SELECT * FROM Recipe WHERE " + string.Join(" AND ", conditions);
+                }
             }
 
 
@@ -128,8 +133,10 @@ namespace Flambe
                     recipe.Name,
                     recipe.Category,
                     recipe.Cuisine
-                });
-                item.Tag = recipe;
+                })
+                {
+                    Tag = recipe
+                };
                 item.BackColor = lvAllRecipes.Items.Count % 2 == 0 ? Color.WhiteSmoke : Color.White;
 
                 lvAllRecipes.Items.Add(item);
@@ -140,7 +147,7 @@ namespace Flambe
         }
 
         /// <summary>
-        /// Populates the edit/create ComboBoxes with known values from the database
+        /// Parses a raw "query string" into key-value pairs
         /// </summary>
         private IEnumerable<Tuple<string, string>> GetSearchTerms(string query)
         {
@@ -155,15 +162,16 @@ namespace Flambe
 
                 yield return new Tuple<string, string>(match.Groups[1].ToString(), match.Groups[3].ToString());
 
-                query = query.Replace(match.Groups[0].ToString(), "").Trim();
+                query = query.Replace(match.Groups[0].ToString(), string.Empty).Trim();
             }
 
             if (!string.IsNullOrEmpty(query))
             {
                 // for the remainder of terms, assign to name individually.
-                // TODO: keep enquoted values together
                 foreach (var term in query.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries))
+                {
                     yield return new Tuple<string, string>("name", term);
+                }
             }
 
         }
@@ -196,21 +204,22 @@ namespace Flambe
                 tbPrepTime.Text = recipe.PrepTime;
                 tbComment.Text = recipe.Comment;
 
+                recipe.LoadChildren();
+
+                lvIngredients.Items.Clear();
                 foreach (var ingredient in recipe.Ingredients)
                 {
                     lvIngredients.Items.Add(new ListViewItem(new[] {
-                        ingredient.Quantity,
-                        ingredient.Units,
-                        ingredient.Item,
-                        ingredient.Remarks,
-                        ingredient.IsOptional ? "Y" : string.Empty
-                    })
-                    {
-                        Tag = ingredient
-                    }
-                    );
+                            ingredient.Quantity,
+                            ingredient.Units,
+                            ingredient.Item,
+                            ingredient.Remarks,
+                            ingredient.IsOptional ? "Y" : string.Empty
+                        })
+                        {
+                            Tag = ingredient
+                        });
                 }
-
 
                 tbInstructions.Text = string.Join("\r\n\r\n", recipe.Instructions.OrderBy(i => i.InstructionId).Select(i => i.Text));
             }
@@ -218,10 +227,47 @@ namespace Flambe
             if (switchTabs)
                 tabControl.SelectedIndex = 2;
         }
+
+        private void RefreshIngredientList()
+        {
+            if (currentRecipe == null)
+                return;
+
+            lvIngredients.Items.Clear();
+            foreach (var ingredient in currentRecipe.Ingredients)
+            {
+                var item = new ListViewItem(new[] {
+                            ingredient.Quantity,
+                            ingredient.Units,
+                            ingredient.Item,
+                            ingredient.Remarks,
+                            ingredient.IsOptional ? "Y" : ""
+                        })
+                    {
+                        Tag = ingredient
+                    };
+                lvIngredients.Items.Add(item);
+            }
+        }
+        
+        private void ClearRecipe()
+        {
+            currentRecipe = null;
+            tbName.Text =
+                tbServings.Text =
+                cbCuisine.Text =
+                cbCategory.Text =
+                cbCredit.Text =
+                tbCookTime.Text =
+                tbPrepTime.Text =
+                tbComment.Text = string.Empty;
+            lvIngredients.Items.Clear();
+            tbInstructions.Text = string.Empty;
+        }
         #endregion
 
 
-        #region Events
+        #region Search Events
         private void lvAllRecipes_DoubleClick(object sender, EventArgs e)
         {
             var item = lvAllRecipes.SelectedItems[0];
@@ -242,6 +288,7 @@ namespace Flambe
                 var cm = new ContextMenu();
 
                 var recipe = lvAllRecipes.SelectedItems[0].Tag as Recipe;
+                recipe.LoadChildren();
 
                 var mi = new MenuItem("Open re&cipe", lvAllRecipes_DoubleClick) { Tag = recipe };
                 cm.MenuItems.Add(mi);
@@ -250,7 +297,7 @@ namespace Flambe
                 cm.MenuItems.Add(mi);
 
                 mi = new MenuItem("&Edit recipe") { Tag = recipe };
-                mi.Click += new EventHandler((obj, args) => EditRecipe(mi.Tag as Recipe));
+                mi.Click += new EventHandler((obj, args) => EditRecipe(recipe));
                 cm.MenuItems.Add(mi);
 
                 mi = new MenuItem("Uplo&ad recipe") { Tag = recipe };
@@ -259,56 +306,31 @@ namespace Flambe
                 mi = new MenuItem("&Delete recipe") { Tag = recipe };
                 mi.Click += new EventHandler((obj, args) =>
                 {
+                    var taggedRecipe = ((MenuItem)obj).Tag as Recipe;
                     var choice = MessageBox.Show("Are you sure you want to delete this recipe?", "Delete recipe?", MessageBoxButtons.YesNo);
                     if (choice == System.Windows.Forms.DialogResult.Yes)
                     {
                         for (int i = 0; i < lvAllRecipes.Items.Count; i++)
                         {
-                            if (lvAllRecipes.Items[i].Tag == mi.Tag)
+                            if (lvAllRecipes.Items[i].Tag == taggedRecipe)
                             {
                                 lvAllRecipes.Items.RemoveAt(i);
                                 break;
                             }
                         }
-                        recipe.Delete();
-                        lvAllRecipes.SelectedItems.Clear();
+                        taggedRecipe.Delete();
                     }
                 });
                 cm.MenuItems.Add(mi);
 
-                this.ContextMenu = cm;
-            }
-        }
-
-        private void lvIngredients_MouseClick(object sender, MouseEventArgs e)
-        {
-            if (e.Button == System.Windows.Forms.MouseButtons.Right)
-            {
-                var cm = new ContextMenu();
-                var ingredient = ((ListView)sender).SelectedItems[0].Tag as Ingredient;
-
-                var mi = new MenuItem("Delete ingredient")
-                {
-                    Tag = ingredient
-                };
+                mi = new MenuItem("&New recipe");
                 mi.Click += new EventHandler((obj, args) =>
                 {
-                    var response = MessageBox.Show("Are you sure you want to delete this ingredient?", "Delete ingredient?", MessageBoxButtons.YesNo);
-                    if (response == System.Windows.Forms.DialogResult.Yes)
-                    {
-                        if (ingredient.Delete())
-                            lvIngredients.Items.RemoveAt(((ListView)sender).SelectedIndices[0]);
-                    }
+                    ClearRecipe();
+                    tabControl.SelectedIndex = 2;
+                    tbName.Focus();
                 });
                 cm.MenuItems.Add(mi);
-
-
-                mi = new MenuItem("Add ingredient");
-                mi.Click += new EventHandler((obj, args) =>
-                {
-                    var i = new Ingredient(null /* TODO */);
-                });
-
 
                 this.ContextMenu = cm;
             }
@@ -350,11 +372,51 @@ namespace Flambe
         {
             System.Diagnostics.Process.Start("http://flambe.dingostick.com");
         }
+        #endregion
+
+        #region Create Events
+        private void lvIngredients_MouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            {
+                var cm = new ContextMenu();
+                var ingredient = ((ListView)sender).SelectedItems[0].Tag as Ingredient;
+
+                var mi = new MenuItem("Delete ingredient")
+                {
+                    Tag = ingredient
+                };
+                mi.Click += new EventHandler((obj, args) =>
+                {
+                    var response = MessageBox.Show("Are you sure you want to delete this ingredient?", "Delete ingredient?", MessageBoxButtons.YesNo);
+                    if (response == System.Windows.Forms.DialogResult.Yes)
+                    {
+                        if (ingredient.Delete())
+                        {
+                            lvIngredients.Items.RemoveAt(((ListView)sender).SelectedIndices[0]);
+                        }
+                    }
+                });
+                cm.MenuItems.Add(mi);
+
+
+                mi = new MenuItem("Add ingredient");
+                mi.Click += new EventHandler((obj, args) =>
+                {
+                    var i = new Ingredient(currentRecipe);
+                });
+
+
+                this.ContextMenu = cm;
+            }
+        }
 
         private void btnSaveRecipe_Click(object sender, EventArgs e)
         {
             if (currentRecipe == null)
+            {
                 currentRecipe = new Recipe();
+            }
 
             currentRecipe.Name = tbName.Text;
             currentRecipe.Servings = tbServings.Text;
@@ -365,12 +427,17 @@ namespace Flambe
             currentRecipe.PrepTime = tbPrepTime.Text;
             currentRecipe.Comment = tbComment.Text;
 
+            // TODO: ensure we don't bloat the Instructions table with orphaned rows
             currentRecipe.Instructions = tbInstructions.Text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-                .Select((t, i) => new Instruction() { Text = t, InstructionId = i }).ToList();
+                .Select((t, i) => new Instruction(currentRecipe) { Text = t, InstructionId = i, parent = currentRecipe }).ToList();
 
             currentRecipe.Commit();
+
+            // move back to the search page and refresh the list
+            displayRecipes();
+            tabControl.SelectedIndex = 0;
+            ClearRecipe();
         }
-        #endregion
 
         private void allIngredients_KeyPress(object sender, KeyPressEventArgs e)
         {
@@ -419,28 +486,6 @@ namespace Flambe
             RefreshIngredientList();
         }
 
-        private void RefreshIngredientList()
-        {
-            if (currentRecipe == null)
-                return;
-
-            lvIngredients.Items.Clear();
-            foreach (var ingredient in currentRecipe.Ingredients)
-            {
-                var item = new ListViewItem(new[] {
-                            ingredient.Quantity,
-                            ingredient.Units,
-                            ingredient.Item,
-                            ingredient.Remarks,
-                            ingredient.IsOptional ? "Y" : ""
-                        })
-                        {
-                            Tag = ingredient
-                        };
-                lvIngredients.Items.Add(item);
-            }
-        }
-
         private void lvIngredients_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
         {
             if (lvIngredients.SelectedItems.Count == 0)
@@ -462,5 +507,6 @@ namespace Flambe
                 cbIsOptional.Checked = ingredient.IsOptional;
             }
         }
+        #endregion
     }
 }

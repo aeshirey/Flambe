@@ -10,7 +10,7 @@ namespace Flambe
 {
     public class Recipe
     {
-        [PrimaryKey]
+        [PrimaryKey, AutoIncrement]
         public int RecipeId { get; set; }
         public string Name { get; set; }
         public string Credit { get; set; }
@@ -34,9 +34,13 @@ namespace Flambe
         public void Commit()
         {
             if (this.RecipeId == 0)
-                this.RecipeId = FlambeDB.connection.Insert(this);
+            {
+                FlambeDB.connection.Insert(this);
+            }
             else
+            {
                 FlambeDB.connection.Update(this);
+            }
 
             for (var i = 0; i < this.Ingredients.Count; i++)
             {
@@ -53,17 +57,31 @@ namespace Flambe
 
         public void LoadChildren()
         {
-            if (this.Instructions == null || this.Instructions.Count == 0)
-                this.Instructions = FlambeDB.connection.Table<Instruction>()
-                    .Where(i => i.RecipeId == this.RecipeId)
+            if (Instructions == null || Instructions.Count == 0)
+            {
+                Instructions = FlambeDB.connection.Table<Instruction>()
+                    .Where(i => i.RecipeId == RecipeId)
                     .OrderBy(i => i.InstructionOrder)
                     .ToList();
 
-            if (this.Ingredients == null || this.Ingredients.Count == 0)
-                this.Ingredients = FlambeDB.connection.Table<Ingredient>()
-                    .Where(i => i.RecipeId == this.RecipeId)
+                foreach (var instruction in Instructions)
+                {
+                    instruction.parent = this;
+                }
+            }
+
+            if (Ingredients == null || Ingredients.Count == 0)
+            {
+                Ingredients = FlambeDB.connection.Table<Ingredient>()
+                    .Where(i => i.RecipeId == RecipeId)
                     .OrderBy(i => i.IngredientOrder)
                     .ToList();
+
+                foreach (var ingredient in Ingredients)
+                {
+                    ingredient.parent = this;
+                }
+            }
         }
 
         public string ToHtml()
@@ -119,12 +137,16 @@ namespace Flambe
         internal void Delete()
         {
             foreach (var ingredient in this.Ingredients)
+            {
                 ingredient.Delete();
+            }
 
             foreach (var instruction in this.Instructions)
+            {
                 instruction.Delete();
+            }
 
-            FlambeDB.connection.Delete<Recipe>(this);
+            FlambeDB.connection.Delete<Recipe>(this.RecipeId);
         }
     }
 }

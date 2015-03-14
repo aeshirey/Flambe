@@ -9,6 +9,8 @@ namespace Flambe
 {
     public class Instruction
     {
+        public Recipe parent;
+
         [PrimaryKey, AutoIncrement]
         public int InstructionId { get; set; }
         public int RecipeId { get; set; }
@@ -16,27 +18,41 @@ namespace Flambe
         public string Text { get; set; }
 
         public Instruction() { }
+        public Instruction(Recipe recipe)
+        {
+            parent = recipe;
+        }
 
         public void Commit()
         {
+            if (this.RecipeId == 0)
+            {
+                if (parent == null || parent.RecipeId == 0)
+                {
+                    throw new InvalidOperationException("Can't get parent recipe id");
+                }
+                this.RecipeId = parent.RecipeId;
+            }
+
             if (this.InstructionId == 0)
-                this.InstructionId = FlambeDB.connection.Insert(this);
+            {
+                FlambeDB.connection.Insert(this);
+            }
             else
+            {
                 FlambeDB.connection.Update(this);
+            }
         }
 
-        public void Commit(Recipe parent)
-        {
-            this.RecipeId = parent.RecipeId;
-            this.Commit();
-        }
 
         internal void Delete()
         {
             if (this.InstructionId == 0)
+            {
                 return;
+            }
 
-            FlambeDB.connection.Delete<Instruction>(this);
+            FlambeDB.connection.Delete<Instruction>(this.InstructionId);
         }
     };
 
