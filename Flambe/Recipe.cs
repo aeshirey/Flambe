@@ -38,11 +38,17 @@ namespace Flambe
             else
                 FlambeDB.connection.Update(this);
 
-            foreach (var ingredient in this.Ingredients)
-                ingredient.Commit();
+            for (var i = 0; i < this.Ingredients.Count; i++)
+            {
+                this.Ingredients[i].IngredientOrder = i + 1;
+                this.Ingredients[i].Commit();
+            }
 
-            foreach (var instruction in this.Instructions)
-                instruction.Commit();
+            for (var i = 0; i < this.Instructions.Count; i++)
+            {
+                this.Instructions[i].InstructionOrder = i + 1;
+                this.Instructions[i].Commit();
+            }
         }
 
         public void LoadChildren()

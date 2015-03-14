@@ -27,7 +27,6 @@ namespace Flambe
 
             lvIngredients.View = View.Details;
             lvIngredients.HeaderStyle = ColumnHeaderStyle.Nonclickable;
-            lvIngredients.ItemSelectionChanged += lvIngredients_SelectedIndexChanged;
             lvIngredients.Columns.Add("quantity", "Qty");
             lvIngredients.Columns.Add("units", "Units");
             lvIngredients.Columns.Add("item", "Item");
@@ -36,7 +35,7 @@ namespace Flambe
 
             lvIngredients.Resize += new EventHandler((obj, args) =>
             {
-                var availableWidth = lvIngredients.Width - 10;
+                var availableWidth = lvIngredients.Width - 20;
                 lvIngredients.Columns[4].Width = cbIsOptional.Width;
                 availableWidth -= cbIsOptional.Width;
 
@@ -51,12 +50,6 @@ namespace Flambe
             });
 
             FlambeDB.LoadDB();
-
-
-            lvIngredients.LostFocus += new EventHandler((obj, args) =>
-            {
-                lvIngredients.SelectedIndices.Clear();
-            });
 
             displayRecipes();
             initComboBoxes();
@@ -169,7 +162,7 @@ namespace Flambe
             {
                 // for the remainder of terms, assign to name individually.
                 // TODO: keep enquoted values together
-                foreach (var term in query.Split(new [] {' '},  StringSplitOptions.RemoveEmptyEntries))
+                foreach (var term in query.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries))
                     yield return new Tuple<string, string>("name", term);
             }
 
@@ -345,85 +338,6 @@ namespace Flambe
             }
         }
 
-        private void lvIngredients_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            var item = lvIngredients.FocusedItem;
-            if (item != null)
-            {
-
-                currentIngredient = item.Tag as Ingredient;
-
-                tbQuantity.Text = currentIngredient.Quantity;
-                tbUnits.Text = currentIngredient.Units;
-                tbItem.Text = currentIngredient.Item;
-                tbRemarks.Text = currentIngredient.Remarks;
-                cbIsOptional.Checked = currentIngredient.IsOptional;
-            }
-            else
-            {
-                currentIngredient = null;
-                tbQuantity.Text =
-                    tbUnits.Text =
-                    tbItem.Text =
-                    tbRemarks.Text = string.Empty;
-                cbIsOptional.Checked = false;
-            }
-        }
-
-        private void lvIngredients_SelectedIndexChanged(object sender, ListViewItemSelectionChangedEventArgs e)
-        {
-
-            tbQuantity.Text =
-                tbUnits.Text =
-                tbItem.Text =
-                tbRemarks.Text = string.Empty;
-            cbIsOptional.Checked = false;
-
-            foreach (ListViewItem item in lvIngredients.SelectedItems)
-            {
-
-                var ingredient = item.Tag as Ingredient;
-
-                tbQuantity.Text = ingredient.Quantity;
-                tbUnits.Text = ingredient.Units;
-                tbItem.Text = ingredient.Item;
-                tbRemarks.Text = ingredient.Remarks;
-                cbIsOptional.Checked = ingredient.IsOptional;
-            }
-        }
-
-        private void tbQuantity_KeyPress(object sender, KeyPressEventArgs e)
-        {
-            if (currentIngredient == null)
-                currentIngredient = new Ingredient(currentRecipe)
-                {
-                    Quantity = tbQuantity.Text,
-                    Units = tbUnits.Text,
-                    Item = tbItem.Text,
-                    Remarks = tbRemarks.Text,
-                    IsOptional = cbIsOptional.Checked,
-                    IngredientOrder = currentRecipe.Ingredients.Count + 1,
-                    RecipeId = currentRecipe.RecipeId
-                };
-
-            if (e.KeyChar == 13)
-            {
-                tbQuantity.Text = tbUnits.Text = tbItem.Text = tbRemarks.Text = string.Empty;
-                lvIngredients.Items.Add(new ListViewItem(new[] {
-                    currentIngredient.Quantity,
-                    currentIngredient.Units,
-                    currentIngredient.Item,
-                    currentIngredient.Remarks,
-                    currentIngredient.IsOptional ? "Y" : ""
-                })
-                {
-                    Tag = currentIngredient
-                });
-
-                currentIngredient = null;
-            }
-        }
-
         private void lvAllRecipes_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (((ListView)sender).SelectedItems.Count == 0)
@@ -457,5 +371,96 @@ namespace Flambe
             currentRecipe.Commit();
         }
         #endregion
+
+        private void allIngredients_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar != 13)
+            {
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(tbItem.Text))
+            {
+                // TODO: notify the user that the item must be present
+                return;
+            }
+
+
+            if (currentRecipe == null)
+                currentRecipe = new Recipe();
+
+            if (currentIngredient == null)
+            {
+                currentIngredient = new Ingredient(currentRecipe)
+                {
+                    Quantity = tbQuantity.Text.Trim(),
+                    Units = tbUnits.Text.Trim(),
+                    Item = tbItem.Text.Trim(),
+                    Remarks = tbRemarks.Text.Trim(),
+                    IsOptional = cbIsOptional.Checked,
+                    IngredientOrder = currentRecipe.Ingredients.Count + 1,
+                    RecipeId = currentRecipe.RecipeId,
+                };
+
+                currentRecipe.Ingredients.Add(currentIngredient);
+            }
+            else
+            {
+                currentIngredient.Quantity = tbQuantity.Text.Trim();
+                currentIngredient.Units = tbUnits.Text.Trim();
+                currentIngredient.Item = tbItem.Text.Trim();
+                currentIngredient.Remarks = tbRemarks.Text.Trim();
+                currentIngredient.IsOptional = cbIsOptional.Checked;
+            }
+
+            tbQuantity.Text = tbUnits.Text = tbItem.Text = tbRemarks.Text = string.Empty;
+            currentIngredient = null;
+
+            RefreshIngredientList();
+        }
+
+        private void RefreshIngredientList()
+        {
+            if (currentRecipe == null)
+                return;
+
+            lvIngredients.Items.Clear();
+            foreach (var ingredient in currentRecipe.Ingredients)
+            {
+                var item = new ListViewItem(new[] {
+                            ingredient.Quantity,
+                            ingredient.Units,
+                            ingredient.Item,
+                            ingredient.Remarks,
+                            ingredient.IsOptional ? "Y" : ""
+                        })
+                        {
+                            Tag = ingredient
+                        };
+                lvIngredients.Items.Add(item);
+            }
+        }
+
+        private void lvIngredients_ItemSelectionChanged(object sender, ListViewItemSelectionChangedEventArgs e)
+        {
+            if (lvIngredients.SelectedItems.Count == 0)
+            {
+                tbQuantity.Text =
+                    tbUnits.Text =
+                    tbItem.Text =
+                    tbRemarks.Text = string.Empty;
+                cbIsOptional.Checked = false;
+            }
+            else
+            {
+                var ingredient = lvIngredients.SelectedItems[0].Tag as Ingredient;
+
+                tbQuantity.Text = ingredient.Quantity;
+                tbUnits.Text = ingredient.Units;
+                tbItem.Text = ingredient.Item;
+                tbRemarks.Text = ingredient.Remarks;
+                cbIsOptional.Checked = ingredient.IsOptional;
+            }
+        }
     }
 }

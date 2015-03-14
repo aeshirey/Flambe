@@ -35,6 +35,8 @@
             this.tabView = new System.Windows.Forms.TabPage();
             this.webBrowser1 = new System.Windows.Forms.WebBrowser();
             this.tabCreate = new System.Windows.Forms.TabPage();
+            this.tbComment = new System.Windows.Forms.TextBox();
+            this.lblComment = new System.Windows.Forms.Label();
             this.btnSaveRecipe = new System.Windows.Forms.Button();
             this.gbInstructions = new System.Windows.Forms.GroupBox();
             this.tbInstructions = new System.Windows.Forms.TextBox();
@@ -61,10 +63,8 @@
             this.lblName = new System.Windows.Forms.Label();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.statusLabelGeneralPurpose = new System.Windows.Forms.ToolStripStatusLabel();
-            this.statusLabelFlambeLink = new System.Windows.Forms.ToolStripStatusLabel();
             this.statusLabelSpacer = new System.Windows.Forms.ToolStripStatusLabel();
-            this.tbComment = new System.Windows.Forms.TextBox();
-            this.lblComment = new System.Windows.Forms.Label();
+            this.statusLabelFlambeLink = new System.Windows.Forms.ToolStripStatusLabel();
             this.tabControl.SuspendLayout();
             this.tabSearch.SuspendLayout();
             this.tabView.SuspendLayout();
@@ -82,20 +82,22 @@
             this.tabControl.Controls.Add(this.tabSearch);
             this.tabControl.Controls.Add(this.tabView);
             this.tabControl.Controls.Add(this.tabCreate);
-            this.tabControl.Location = new System.Drawing.Point(12, 12);
+            this.tabControl.Location = new System.Drawing.Point(6, 6);
+            this.tabControl.Margin = new System.Windows.Forms.Padding(2);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(1087, 643);
+            this.tabControl.Size = new System.Drawing.Size(544, 334);
             this.tabControl.TabIndex = 0;
             // 
             // tabSearch
             // 
             this.tabSearch.Controls.Add(this.tbSearch);
             this.tabSearch.Controls.Add(this.lvAllRecipes);
-            this.tabSearch.Location = new System.Drawing.Point(4, 34);
+            this.tabSearch.Location = new System.Drawing.Point(4, 22);
+            this.tabSearch.Margin = new System.Windows.Forms.Padding(2);
             this.tabSearch.Name = "tabSearch";
-            this.tabSearch.Padding = new System.Windows.Forms.Padding(3);
-            this.tabSearch.Size = new System.Drawing.Size(1079, 605);
+            this.tabSearch.Padding = new System.Windows.Forms.Padding(2);
+            this.tabSearch.Size = new System.Drawing.Size(536, 308);
             this.tabSearch.TabIndex = 0;
             this.tabSearch.Text = "Search";
             this.tabSearch.ToolTipText = "Find or browse recipes";
@@ -105,9 +107,10 @@
             // 
             this.tbSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbSearch.Location = new System.Drawing.Point(6, 568);
+            this.tbSearch.Location = new System.Drawing.Point(3, 295);
+            this.tbSearch.Margin = new System.Windows.Forms.Padding(2);
             this.tbSearch.Name = "tbSearch";
-            this.tbSearch.Size = new System.Drawing.Size(1067, 31);
+            this.tbSearch.Size = new System.Drawing.Size(536, 20);
             this.tbSearch.TabIndex = 2;
             this.tbSearch.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbSearch_KeyPress);
             // 
@@ -116,10 +119,12 @@
             this.lvAllRecipes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.lvAllRecipes.Location = new System.Drawing.Point(6, 6);
+            this.lvAllRecipes.FullRowSelect = true;
+            this.lvAllRecipes.Location = new System.Drawing.Point(3, 3);
+            this.lvAllRecipes.Margin = new System.Windows.Forms.Padding(2);
             this.lvAllRecipes.MultiSelect = false;
             this.lvAllRecipes.Name = "lvAllRecipes";
-            this.lvAllRecipes.Size = new System.Drawing.Size(1067, 556);
+            this.lvAllRecipes.Size = new System.Drawing.Size(536, 291);
             this.lvAllRecipes.TabIndex = 1;
             this.lvAllRecipes.UseCompatibleStateImageBehavior = false;
             this.lvAllRecipes.SelectedIndexChanged += new System.EventHandler(this.lvAllRecipes_SelectedIndexChanged);
@@ -130,9 +135,10 @@
             // tabView
             // 
             this.tabView.Controls.Add(this.webBrowser1);
-            this.tabView.Location = new System.Drawing.Point(4, 34);
+            this.tabView.Location = new System.Drawing.Point(4, 22);
+            this.tabView.Margin = new System.Windows.Forms.Padding(2);
             this.tabView.Name = "tabView";
-            this.tabView.Size = new System.Drawing.Size(1079, 605);
+            this.tabView.Size = new System.Drawing.Size(536, 308);
             this.tabView.TabIndex = 2;
             this.tabView.Text = "View";
             this.tabView.UseVisualStyleBackColor = true;
@@ -141,9 +147,10 @@
             // 
             this.webBrowser1.Dock = System.Windows.Forms.DockStyle.Fill;
             this.webBrowser1.Location = new System.Drawing.Point(0, 0);
-            this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
+            this.webBrowser1.Margin = new System.Windows.Forms.Padding(2);
+            this.webBrowser1.MinimumSize = new System.Drawing.Size(10, 10);
             this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.Size = new System.Drawing.Size(1079, 605);
+            this.webBrowser1.Size = new System.Drawing.Size(536, 308);
             this.webBrowser1.TabIndex = 0;
             // 
             // tabCreate
@@ -167,21 +174,43 @@
             this.tabCreate.Controls.Add(this.lblCredit);
             this.tabCreate.Controls.Add(this.tbName);
             this.tabCreate.Controls.Add(this.lblName);
-            this.tabCreate.Location = new System.Drawing.Point(4, 34);
+            this.tabCreate.Location = new System.Drawing.Point(4, 22);
+            this.tabCreate.Margin = new System.Windows.Forms.Padding(2);
             this.tabCreate.Name = "tabCreate";
-            this.tabCreate.Padding = new System.Windows.Forms.Padding(3);
-            this.tabCreate.Size = new System.Drawing.Size(1079, 605);
+            this.tabCreate.Padding = new System.Windows.Forms.Padding(2);
+            this.tabCreate.Size = new System.Drawing.Size(536, 308);
             this.tabCreate.TabIndex = 1;
             this.tabCreate.Text = "Create";
             this.tabCreate.ToolTipText = "Create a new recipe";
             this.tabCreate.UseVisualStyleBackColor = true;
             // 
+            // tbComment
+            // 
+            this.tbComment.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.tbComment.Location = new System.Drawing.Point(280, 81);
+            this.tbComment.Margin = new System.Windows.Forms.Padding(2);
+            this.tbComment.Name = "tbComment";
+            this.tbComment.Size = new System.Drawing.Size(259, 20);
+            this.tbComment.TabIndex = 15;
+            // 
+            // lblComment
+            // 
+            this.lblComment.AutoSize = true;
+            this.lblComment.Location = new System.Drawing.Point(219, 82);
+            this.lblComment.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.lblComment.Name = "lblComment";
+            this.lblComment.Size = new System.Drawing.Size(54, 13);
+            this.lblComment.TabIndex = 14;
+            this.lblComment.Text = "Comment:";
+            // 
             // btnSaveRecipe
             // 
             this.btnSaveRecipe.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSaveRecipe.Location = new System.Drawing.Point(930, 558);
+            this.btnSaveRecipe.Location = new System.Drawing.Point(465, 290);
+            this.btnSaveRecipe.Margin = new System.Windows.Forms.Padding(2);
             this.btnSaveRecipe.Name = "btnSaveRecipe";
-            this.btnSaveRecipe.Size = new System.Drawing.Size(143, 41);
+            this.btnSaveRecipe.Size = new System.Drawing.Size(72, 21);
             this.btnSaveRecipe.TabIndex = 17;
             this.btnSaveRecipe.Text = "S&ave Recipe";
             this.btnSaveRecipe.UseVisualStyleBackColor = true;
@@ -193,9 +222,11 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.gbInstructions.Controls.Add(this.tbInstructions);
-            this.gbInstructions.Location = new System.Drawing.Point(17, 445);
+            this.gbInstructions.Location = new System.Drawing.Point(8, 231);
+            this.gbInstructions.Margin = new System.Windows.Forms.Padding(2);
             this.gbInstructions.Name = "gbInstructions";
-            this.gbInstructions.Size = new System.Drawing.Size(1056, 107);
+            this.gbInstructions.Padding = new System.Windows.Forms.Padding(2);
+            this.gbInstructions.Size = new System.Drawing.Size(528, 56);
             this.gbInstructions.TabIndex = 0;
             this.gbInstructions.TabStop = false;
             this.gbInstructions.Text = "Instructions";
@@ -205,10 +236,11 @@
             this.tbInstructions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbInstructions.Location = new System.Drawing.Point(7, 31);
+            this.tbInstructions.Location = new System.Drawing.Point(4, 16);
+            this.tbInstructions.Margin = new System.Windows.Forms.Padding(2);
             this.tbInstructions.Multiline = true;
             this.tbInstructions.Name = "tbInstructions";
-            this.tbInstructions.Size = new System.Drawing.Size(1043, 70);
+            this.tbInstructions.Size = new System.Drawing.Size(524, 38);
             this.tbInstructions.TabIndex = 0;
             // 
             // gbIngredients
@@ -221,9 +253,11 @@
             this.gbIngredients.Controls.Add(this.tbUnits);
             this.gbIngredients.Controls.Add(this.tbQuantity);
             this.gbIngredients.Controls.Add(this.lvIngredients);
-            this.gbIngredients.Location = new System.Drawing.Point(17, 217);
+            this.gbIngredients.Location = new System.Drawing.Point(8, 113);
+            this.gbIngredients.Margin = new System.Windows.Forms.Padding(2);
             this.gbIngredients.Name = "gbIngredients";
-            this.gbIngredients.Size = new System.Drawing.Size(1056, 222);
+            this.gbIngredients.Padding = new System.Windows.Forms.Padding(2);
+            this.gbIngredients.Size = new System.Drawing.Size(528, 115);
             this.gbIngredients.TabIndex = 16;
             this.gbIngredients.TabStop = false;
             this.gbIngredients.Text = "Ingredients";
@@ -232,74 +266,89 @@
             // 
             this.cbIsOptional.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.cbIsOptional.AutoSize = true;
-            this.cbIsOptional.Location = new System.Drawing.Point(926, 180);
+            this.cbIsOptional.Location = new System.Drawing.Point(459, 92);
+            this.cbIsOptional.Margin = new System.Windows.Forms.Padding(2);
             this.cbIsOptional.Name = "cbIsOptional";
-            this.cbIsOptional.Size = new System.Drawing.Size(124, 29);
+            this.cbIsOptional.Size = new System.Drawing.Size(65, 17);
             this.cbIsOptional.TabIndex = 5;
             this.cbIsOptional.Text = "Optional";
             this.cbIsOptional.UseVisualStyleBackColor = true;
+            this.cbIsOptional.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.allIngredients_KeyPress);
             // 
             // tbRemarks
             // 
             this.tbRemarks.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbRemarks.Location = new System.Drawing.Point(714, 178);
+            this.tbRemarks.Location = new System.Drawing.Point(357, 93);
+            this.tbRemarks.Margin = new System.Windows.Forms.Padding(2);
             this.tbRemarks.Name = "tbRemarks";
-            this.tbRemarks.Size = new System.Drawing.Size(193, 31);
+            this.tbRemarks.Size = new System.Drawing.Size(98, 20);
             this.tbRemarks.TabIndex = 4;
+            this.tbRemarks.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.allIngredients_KeyPress);
             // 
             // tbItem
             // 
             this.tbItem.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbItem.Location = new System.Drawing.Point(272, 178);
+            this.tbItem.Location = new System.Drawing.Point(136, 93);
+            this.tbItem.Margin = new System.Windows.Forms.Padding(2);
             this.tbItem.Name = "tbItem";
-            this.tbItem.Size = new System.Drawing.Size(436, 31);
+            this.tbItem.Size = new System.Drawing.Size(220, 20);
             this.tbItem.TabIndex = 3;
+            this.tbItem.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.allIngredients_KeyPress);
             // 
             // tbUnits
             // 
             this.tbUnits.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.tbUnits.Location = new System.Drawing.Point(82, 178);
+            this.tbUnits.Location = new System.Drawing.Point(41, 93);
+            this.tbUnits.Margin = new System.Windows.Forms.Padding(2);
             this.tbUnits.Name = "tbUnits";
-            this.tbUnits.Size = new System.Drawing.Size(184, 31);
+            this.tbUnits.Size = new System.Drawing.Size(94, 20);
             this.tbUnits.TabIndex = 2;
+            this.tbUnits.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.allIngredients_KeyPress);
             // 
             // tbQuantity
             // 
             this.tbQuantity.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.tbQuantity.Location = new System.Drawing.Point(7, 178);
+            this.tbQuantity.Location = new System.Drawing.Point(4, 93);
+            this.tbQuantity.Margin = new System.Windows.Forms.Padding(2);
             this.tbQuantity.Name = "tbQuantity";
-            this.tbQuantity.Size = new System.Drawing.Size(69, 31);
+            this.tbQuantity.Size = new System.Drawing.Size(36, 20);
             this.tbQuantity.TabIndex = 1;
+            this.tbQuantity.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.allIngredients_KeyPress);
             // 
             // lvIngredients
             // 
             this.lvIngredients.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.lvIngredients.FullRowSelect = true;
             this.lvIngredients.HideSelection = false;
-            this.lvIngredients.Location = new System.Drawing.Point(7, 31);
+            this.lvIngredients.Location = new System.Drawing.Point(4, 16);
+            this.lvIngredients.Margin = new System.Windows.Forms.Padding(2);
             this.lvIngredients.MultiSelect = false;
             this.lvIngredients.Name = "lvIngredients";
-            this.lvIngredients.Size = new System.Drawing.Size(1043, 141);
+            this.lvIngredients.Size = new System.Drawing.Size(524, 75);
             this.lvIngredients.TabIndex = 0;
             this.lvIngredients.UseCompatibleStateImageBehavior = false;
+            this.lvIngredients.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.lvIngredients_ItemSelectionChanged);
             // 
             // tbCookTime
             // 
             this.tbCookTime.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbCookTime.Location = new System.Drawing.Point(559, 112);
+            this.tbCookTime.Location = new System.Drawing.Point(280, 58);
+            this.tbCookTime.Margin = new System.Windows.Forms.Padding(2);
             this.tbCookTime.Name = "tbCookTime";
-            this.tbCookTime.Size = new System.Drawing.Size(514, 31);
+            this.tbCookTime.Size = new System.Drawing.Size(259, 20);
             this.tbCookTime.TabIndex = 13;
             // 
             // lblCookTime
             // 
             this.lblCookTime.AutoSize = true;
-            this.lblCookTime.Location = new System.Drawing.Point(438, 115);
+            this.lblCookTime.Location = new System.Drawing.Point(219, 60);
+            this.lblCookTime.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblCookTime.Name = "lblCookTime";
-            this.lblCookTime.Size = new System.Drawing.Size(121, 25);
+            this.lblCookTime.Size = new System.Drawing.Size(61, 13);
             this.lblCookTime.TabIndex = 12;
             this.lblCookTime.Text = "Cook Time:";
             // 
@@ -307,17 +356,19 @@
             // 
             this.tbPrepTime.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbPrepTime.Location = new System.Drawing.Point(559, 64);
+            this.tbPrepTime.Location = new System.Drawing.Point(280, 33);
+            this.tbPrepTime.Margin = new System.Windows.Forms.Padding(2);
             this.tbPrepTime.Name = "tbPrepTime";
-            this.tbPrepTime.Size = new System.Drawing.Size(514, 31);
+            this.tbPrepTime.Size = new System.Drawing.Size(259, 20);
             this.tbPrepTime.TabIndex = 11;
             // 
             // lblPrepTime
             // 
             this.lblPrepTime.AutoSize = true;
-            this.lblPrepTime.Location = new System.Drawing.Point(438, 67);
+            this.lblPrepTime.Location = new System.Drawing.Point(219, 35);
+            this.lblPrepTime.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblPrepTime.Name = "lblPrepTime";
-            this.lblPrepTime.Size = new System.Drawing.Size(116, 25);
+            this.lblPrepTime.Size = new System.Drawing.Size(58, 13);
             this.lblPrepTime.TabIndex = 10;
             this.lblPrepTime.Text = "Prep Time:";
             // 
@@ -325,84 +376,94 @@
             // 
             this.tbServings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbServings.Location = new System.Drawing.Point(559, 14);
+            this.tbServings.Location = new System.Drawing.Point(280, 7);
+            this.tbServings.Margin = new System.Windows.Forms.Padding(2);
             this.tbServings.Name = "tbServings";
-            this.tbServings.Size = new System.Drawing.Size(514, 31);
+            this.tbServings.Size = new System.Drawing.Size(259, 20);
             this.tbServings.TabIndex = 9;
             // 
             // lblServings
             // 
             this.lblServings.AutoSize = true;
-            this.lblServings.Location = new System.Drawing.Point(438, 17);
+            this.lblServings.Location = new System.Drawing.Point(219, 9);
+            this.lblServings.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblServings.Name = "lblServings";
-            this.lblServings.Size = new System.Drawing.Size(102, 25);
+            this.lblServings.Size = new System.Drawing.Size(51, 13);
             this.lblServings.TabIndex = 8;
             this.lblServings.Text = "Servings:";
             // 
             // cbCuisine
             // 
             this.cbCuisine.FormattingEnabled = true;
-            this.cbCuisine.Location = new System.Drawing.Point(133, 155);
+            this.cbCuisine.Location = new System.Drawing.Point(66, 81);
+            this.cbCuisine.Margin = new System.Windows.Forms.Padding(2);
             this.cbCuisine.Name = "cbCuisine";
-            this.cbCuisine.Size = new System.Drawing.Size(289, 33);
+            this.cbCuisine.Size = new System.Drawing.Size(146, 21);
             this.cbCuisine.TabIndex = 7;
             // 
             // lblCuisine
             // 
             this.lblCuisine.AutoSize = true;
-            this.lblCuisine.Location = new System.Drawing.Point(12, 155);
+            this.lblCuisine.Location = new System.Drawing.Point(6, 81);
+            this.lblCuisine.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblCuisine.Name = "lblCuisine";
-            this.lblCuisine.Size = new System.Drawing.Size(90, 25);
+            this.lblCuisine.Size = new System.Drawing.Size(44, 13);
             this.lblCuisine.TabIndex = 6;
             this.lblCuisine.Text = "Cuisine:";
             // 
             // cbCategory
             // 
             this.cbCategory.FormattingEnabled = true;
-            this.cbCategory.Location = new System.Drawing.Point(133, 108);
+            this.cbCategory.Location = new System.Drawing.Point(66, 56);
+            this.cbCategory.Margin = new System.Windows.Forms.Padding(2);
             this.cbCategory.Name = "cbCategory";
-            this.cbCategory.Size = new System.Drawing.Size(289, 33);
+            this.cbCategory.Size = new System.Drawing.Size(146, 21);
             this.cbCategory.TabIndex = 5;
             // 
             // lblCategory
             // 
             this.lblCategory.AutoSize = true;
-            this.lblCategory.Location = new System.Drawing.Point(12, 108);
+            this.lblCategory.Location = new System.Drawing.Point(6, 56);
+            this.lblCategory.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblCategory.Name = "lblCategory";
-            this.lblCategory.Size = new System.Drawing.Size(105, 25);
+            this.lblCategory.Size = new System.Drawing.Size(52, 13);
             this.lblCategory.TabIndex = 4;
             this.lblCategory.Text = "Category:";
             // 
             // cbCredit
             // 
             this.cbCredit.FormattingEnabled = true;
-            this.cbCredit.Location = new System.Drawing.Point(133, 62);
+            this.cbCredit.Location = new System.Drawing.Point(66, 32);
+            this.cbCredit.Margin = new System.Windows.Forms.Padding(2);
             this.cbCredit.Name = "cbCredit";
-            this.cbCredit.Size = new System.Drawing.Size(289, 33);
+            this.cbCredit.Size = new System.Drawing.Size(146, 21);
             this.cbCredit.TabIndex = 3;
             // 
             // lblCredit
             // 
             this.lblCredit.AutoSize = true;
-            this.lblCredit.Location = new System.Drawing.Point(12, 62);
+            this.lblCredit.Location = new System.Drawing.Point(6, 32);
+            this.lblCredit.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblCredit.Name = "lblCredit";
-            this.lblCredit.Size = new System.Drawing.Size(75, 25);
+            this.lblCredit.Size = new System.Drawing.Size(37, 13);
             this.lblCredit.TabIndex = 2;
             this.lblCredit.Text = "Credit:";
             // 
             // tbName
             // 
-            this.tbName.Location = new System.Drawing.Point(133, 17);
+            this.tbName.Location = new System.Drawing.Point(66, 9);
+            this.tbName.Margin = new System.Windows.Forms.Padding(2);
             this.tbName.Name = "tbName";
-            this.tbName.Size = new System.Drawing.Size(289, 31);
+            this.tbName.Size = new System.Drawing.Size(146, 20);
             this.tbName.TabIndex = 1;
             // 
             // lblName
             // 
             this.lblName.AutoSize = true;
-            this.lblName.Location = new System.Drawing.Point(12, 20);
+            this.lblName.Location = new System.Drawing.Point(6, 10);
+            this.lblName.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
             this.lblName.Name = "lblName";
-            this.lblName.Size = new System.Drawing.Size(74, 25);
+            this.lblName.Size = new System.Drawing.Size(38, 13);
             this.lblName.TabIndex = 0;
             this.lblName.Text = "Name:";
             // 
@@ -413,9 +474,10 @@
             this.statusLabelGeneralPurpose,
             this.statusLabelSpacer,
             this.statusLabelFlambeLink});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 792);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 359);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1111, 37);
+            this.statusStrip1.Padding = new System.Windows.Forms.Padding(0, 0, 7, 0);
+            this.statusStrip1.Size = new System.Drawing.Size(556, 22);
             this.statusStrip1.TabIndex = 1;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -423,49 +485,32 @@
             // 
             this.statusLabelGeneralPurpose.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Text;
             this.statusLabelGeneralPurpose.Name = "statusLabelGeneralPurpose";
-            this.statusLabelGeneralPurpose.Size = new System.Drawing.Size(22, 32);
+            this.statusLabelGeneralPurpose.Size = new System.Drawing.Size(10, 17);
             this.statusLabelGeneralPurpose.Text = " ";
+            // 
+            // statusLabelSpacer
+            // 
+            this.statusLabelSpacer.Name = "statusLabelSpacer";
+            this.statusLabelSpacer.Size = new System.Drawing.Size(10, 17);
+            this.statusLabelSpacer.Text = " ";
             // 
             // statusLabelFlambeLink
             // 
             this.statusLabelFlambeLink.IsLink = true;
             this.statusLabelFlambeLink.Name = "statusLabelFlambeLink";
-            this.statusLabelFlambeLink.Size = new System.Drawing.Size(131, 32);
+            this.statusLabelFlambeLink.Size = new System.Drawing.Size(64, 17);
             this.statusLabelFlambeLink.Text = "Flambe 3.0";
             this.statusLabelFlambeLink.Click += new System.EventHandler(this.toolStripStatusLabel2_Click);
             // 
-            // statusLabelSpacer
-            // 
-            this.statusLabelSpacer.Name = "statusLabelSpacer";
-            this.statusLabelSpacer.Size = new System.Drawing.Size(22, 32);
-            this.statusLabelSpacer.Text = " ";
-            // 
-            // tbComment
-            // 
-            this.tbComment.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbComment.Location = new System.Drawing.Point(559, 155);
-            this.tbComment.Name = "tbComment";
-            this.tbComment.Size = new System.Drawing.Size(514, 31);
-            this.tbComment.TabIndex = 15;
-            // 
-            // lblComment
-            // 
-            this.lblComment.AutoSize = true;
-            this.lblComment.Location = new System.Drawing.Point(438, 158);
-            this.lblComment.Name = "lblComment";
-            this.lblComment.Size = new System.Drawing.Size(109, 25);
-            this.lblComment.TabIndex = 14;
-            this.lblComment.Text = "Comment:";
-            // 
             // formMain
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1111, 829);
+            this.ClientSize = new System.Drawing.Size(556, 381);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.tabControl);
-            this.MinimumSize = new System.Drawing.Size(800, 900);
+            this.Margin = new System.Windows.Forms.Padding(2);
+            this.MinimumSize = new System.Drawing.Size(408, 401);
             this.Name = "formMain";
             this.Text = "Flambe";
             this.tabControl.ResumeLayout(false);
