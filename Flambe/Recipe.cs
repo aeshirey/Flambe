@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Web.Script.Serialization;
-using SQLite;
-
-namespace Flambe
+﻿namespace Flambe
 {
+    using System;
+    using System.Collections.Generic;
+    using System.Linq;
+    using System.Text;
+    using SQLite;
+
     public class Recipe
     {
         [PrimaryKey, AutoIncrement]
@@ -24,7 +22,6 @@ namespace Flambe
         public List<Ingredient> Ingredients;
         public List<Instruction> Instructions;
 
-
         public Recipe()
         {
             this.Ingredients = new List<Ingredient>();
@@ -35,11 +32,11 @@ namespace Flambe
         {
             if (this.RecipeId == 0)
             {
-                FlambeDB.connection.Insert(this);
+                FlambeDB.DbConnection.Insert(this);
             }
             else
             {
-                FlambeDB.connection.Update(this);
+                FlambeDB.DbConnection.Update(this);
             }
 
             for (var i = 0; i < this.Ingredients.Count; i++)
@@ -59,27 +56,27 @@ namespace Flambe
         {
             if (Instructions == null || Instructions.Count == 0)
             {
-                Instructions = FlambeDB.connection.Table<Instruction>()
+                Instructions = FlambeDB.DbConnection.Table<Instruction>()
                     .Where(i => i.RecipeId == RecipeId)
                     .OrderBy(i => i.InstructionOrder)
                     .ToList();
 
                 foreach (var instruction in Instructions)
                 {
-                    instruction.parent = this;
+                    instruction.Parent = this;
                 }
             }
 
             if (Ingredients == null || Ingredients.Count == 0)
             {
-                Ingredients = FlambeDB.connection.Table<Ingredient>()
+                Ingredients = FlambeDB.DbConnection.Table<Ingredient>()
                     .Where(i => i.RecipeId == RecipeId)
                     .OrderBy(i => i.IngredientOrder)
                     .ToList();
 
                 foreach (var ingredient in Ingredients)
                 {
-                    ingredient.parent = this;
+                    ingredient.Parent = this;
                 }
             }
         }
@@ -113,10 +110,10 @@ namespace Flambe
                         + (string.IsNullOrEmpty(ingredient.Units) ? string.Empty : " " + ingredient.Units)
                         + (string.IsNullOrEmpty(ingredient.Item) ? string.Empty : " " + ingredient.Item)
                         + (string.IsNullOrEmpty(ingredient.Remarks) ? string.Empty : ", " + ingredient.Remarks)
-                        + (ingredient.IsOptional ? " (optional" : string.Empty)
-                        ;
+                        + (ingredient.IsOptional ? " (optional" : string.Empty);
                     sb.AppendLine("<li>" + ingredientContent + "</li>");
                 }
+
                 sb.AppendLine("</ul>");
             }
 
@@ -128,6 +125,7 @@ namespace Flambe
                 {
                     sb.AppendLine("<li>" + instruction.Text + "</li>");
                 }
+
                 sb.AppendLine("</ol>");
             }
 
@@ -146,7 +144,7 @@ namespace Flambe
                 instruction.Delete();
             }
 
-            FlambeDB.connection.Delete<Recipe>(this.RecipeId);
+            FlambeDB.DbConnection.Delete<Recipe>(this.RecipeId);
         }
     }
 }

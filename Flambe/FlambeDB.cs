@@ -1,23 +1,23 @@
-﻿using SQLite;
-
-namespace Flambe
+﻿namespace Flambe
 {
-    static class FlambeDB
+    using SQLite;
+
+    public static class FlambeDB
     {
-        public const string DATABASE_FILE = @"recipes.sqlite";
-        public static SQLiteConnection connection;
+        public const string DatabaseFile = @"recipes.sqlite";
+        public static SQLiteConnection DbConnection;
         public static void LoadDB()
         {
-            connection = new SQLiteConnection(DATABASE_FILE);
-            connection.CreateTable<Recipe>();
-            connection.CreateTable<Instruction>();
-            connection.CreateTable<Ingredient>();
-            connection.Commit();
+            DbConnection = new SQLiteConnection(DatabaseFile);
+            DbConnection.CreateTable<Recipe>();
+            DbConnection.CreateTable<Instruction>();
+            DbConnection.CreateTable<Ingredient>();
+            DbConnection.Commit();
         }
 
         public static void CloseDB()
         {
-            connection.Close();
+            DbConnection.Close();
         }
     }
 }

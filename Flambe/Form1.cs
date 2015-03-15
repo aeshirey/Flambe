@@ -1,13 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Drawing;
-using System.Linq;
-using System.Windows.Forms;
-using System.Text.RegularExpressions;
-
-namespace Flambe
+﻿namespace Flambe
 {
+    using System;
+    using System.Collections.Generic;
+    using System.ComponentModel;
+    using System.Drawing;
+    using System.Linq;
+    using System.Text.RegularExpressions;
+    using System.Windows.Forms;
+
+    /// <summary>
+    /// Flambe's core GUI logic
+    /// </summary>
     public partial class formMain : Form
     {
         private Recipe currentRecipe;
@@ -19,7 +22,7 @@ namespace Flambe
             InitializeComponent();
 
             lvAllRecipes.View = View.Details;
-            var totalWidth = (lvAllRecipes.Width - 30);
+            var totalWidth = lvAllRecipes.Width - 30;
             lvAllRecipes.Columns.Add("name", "Name", totalWidth / 3);
             lvAllRecipes.Columns.Add("category", "Category", totalWidth / 3);
             lvAllRecipes.Columns.Add("cuisine", "Cuisine", totalWidth / 3);
@@ -55,6 +58,12 @@ namespace Flambe
             initStatusStrip();
         }
 
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            FlambeDB.CloseDB();
+            base.OnClosing(e);
+        }
+
         /// <summary>
         /// Initializes all ComboBoxes to include a set of distinct values known from the database
         /// </summary>
@@ -63,7 +72,8 @@ namespace Flambe
             var credits = new HashSet<string>();
             var cuisines = new HashSet<string>();
             var categories = new HashSet<string>();
-            foreach (var recipe in FlambeDB.connection.Table<Recipe>())
+
+            foreach (var recipe in FlambeDB.DbConnection.Table<Recipe>())
             {
                 credits.Add(recipe.Credit);
                 cuisines.Add(recipe.Cuisine);
@@ -78,12 +88,7 @@ namespace Flambe
         private void initStatusStrip()
         {
             // for storing the recipe name or whatever
-            statusStrip1.Items.Add(new ToolStripStatusLabel(""));
-        }
-        protected override void OnClosing(CancelEventArgs e)
-        {
-            FlambeDB.CloseDB();
-            base.OnClosing(e);
+            statusStrip1.Items.Add(new ToolStripStatusLabel(string.Empty));
         }
         #endregion
 
@@ -124,9 +129,8 @@ namespace Flambe
                 }
             }
 
-
             lvAllRecipes.Items.Clear();
-            foreach (var recipe in FlambeDB.connection.Query<Recipe>(query))
+            foreach (var recipe in FlambeDB.DbConnection.Query<Recipe>(query))
             {
                 var item = new ListViewItem(new[]
                 {
@@ -142,19 +146,21 @@ namespace Flambe
                 lvAllRecipes.Items.Add(item);
             }
 
-            var numRecipes = lvAllRecipes.Items.Count;
+            var numRecipes = this.lvAllRecipes.Items.Count;
             statusLabelGeneralPurpose.Text = numRecipes == 1 ? "Displaying 1 recipe" : "Displaying " + numRecipes.ToString() + " recipes";
         }
 
         /// <summary>
         /// Parses a raw "query string" into key-value pairs
         /// </summary>
+        /// <param name="query">A human-readable query; e.g., cuisine:indian credit:"jane smith"</param>
+        /// <returns>The parsed components of the query; e.g., (cuisine,indian), (credit,jane smith)</returns>
         private IEnumerable<Tuple<string, string>> GetSearchTerms(string query)
         {
-            const string pattern = @"([a-z]+):(""?)([^""]+?)\b\2";
+            const string Pattern = @"([a-z]+):(""?)([^""]+?)\b\2";
 
             query = query.Trim().ToLowerInvariant();
-            var matches = Regex.Matches(query, pattern);
+            var matches = Regex.Matches(query, Pattern);
             foreach (Match match in matches)
             {
                 var k = match.Groups[1].Value;
@@ -173,7 +179,6 @@ namespace Flambe
                     yield return new Tuple<string, string>("name", term);
                 }
             }
-
         }
 
         private void EditRecipe(Recipe recipe, bool switchTabs = true)
@@ -191,7 +196,7 @@ namespace Flambe
 
                 lvIngredients.Items.Clear();
 
-                tbInstructions.Text = "";
+                tbInstructions.Text = string.Empty;
             }
             else
             {
@@ -209,7 +214,8 @@ namespace Flambe
                 lvIngredients.Items.Clear();
                 foreach (var ingredient in recipe.Ingredients)
                 {
-                    lvIngredients.Items.Add(new ListViewItem(new[] {
+                    lvIngredients.Items.Add(new ListViewItem(new[] 
+                    {
                             ingredient.Quantity,
                             ingredient.Units,
                             ingredient.Item,
@@ -225,31 +231,36 @@ namespace Flambe
             }
 
             if (switchTabs)
+            {
                 tabControl.SelectedIndex = 2;
+            }
         }
 
         private void RefreshIngredientList()
         {
             if (currentRecipe == null)
+            {
                 return;
+            }
 
             lvIngredients.Items.Clear();
             foreach (var ingredient in currentRecipe.Ingredients)
             {
-                var item = new ListViewItem(new[] {
+                var item = new ListViewItem(new[]
+                {
                             ingredient.Quantity,
                             ingredient.Units,
                             ingredient.Item,
                             ingredient.Remarks,
-                            ingredient.IsOptional ? "Y" : ""
-                        })
-                    {
-                        Tag = ingredient
-                    };
+                            ingredient.IsOptional ? "Y" : string.Empty
+                })
+                {
+                    Tag = ingredient
+                };
                 lvIngredients.Items.Add(item);
             }
         }
-        
+
         private void ClearRecipe()
         {
             currentRecipe = null;
@@ -265,7 +276,6 @@ namespace Flambe
             tbInstructions.Text = string.Empty;
         }
         #endregion
-
 
         #region Search Events
         private void lvAllRecipes_DoubleClick(object sender, EventArgs e)
@@ -318,6 +328,7 @@ namespace Flambe
                                 break;
                             }
                         }
+
                         taggedRecipe.Delete();
                     }
                 });
@@ -331,18 +342,17 @@ namespace Flambe
                     tbName.Focus();
                 });
                 cm.MenuItems.Add(mi);
-
-                this.ContextMenu = cm;
+                ContextMenu = cm;
             }
         }
 
         private void lvAllRecipes_Resize(object sender, EventArgs e)
         {
-            //var totalWidth = (lvAllRecipes.Width - 30);
+            ////var totalWidth = (lvAllRecipes.Width - 30);
 
-            //lvAllRecipes.Columns["name"].Width = totalWidth / 3;
-            //lvAllRecipes.Columns["category"].Width = totalWidth / 3;
-            //lvAllRecipes.Columns["cuisine"].Width = totalWidth / 3;
+            ////lvAllRecipes.Columns["name"].Width = totalWidth / 3;
+            ////lvAllRecipes.Columns["category"].Width = totalWidth / 3;
+            ////lvAllRecipes.Columns["cuisine"].Width = totalWidth / 3;
         }
 
         private void tbSearch_KeyPress(object sender, KeyPressEventArgs e)
@@ -363,9 +373,12 @@ namespace Flambe
         private void lvAllRecipes_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (((ListView)sender).SelectedItems.Count == 0)
+            {
                 return;
+            }
+
             var recipe = ((ListView)sender).SelectedItems[0].Tag as Recipe;
-            statusStrip1.Items[0].Text = recipe.Name + (string.IsNullOrEmpty(recipe.Credit) ? "" : " by " + recipe.Credit);
+            statusStrip1.Items[0].Text = recipe.Name + (string.IsNullOrEmpty(recipe.Credit) ? string.Empty : " by " + recipe.Credit);
         }
 
         private void toolStripStatusLabel2_Click(object sender, EventArgs e)
@@ -399,15 +412,13 @@ namespace Flambe
                 });
                 cm.MenuItems.Add(mi);
 
-
                 mi = new MenuItem("Add ingredient");
                 mi.Click += new EventHandler((obj, args) =>
                 {
                     var i = new Ingredient(currentRecipe);
                 });
 
-
-                this.ContextMenu = cm;
+                ContextMenu = cm;
             }
         }
 
@@ -429,7 +440,7 @@ namespace Flambe
 
             // TODO: ensure we don't bloat the Instructions table with orphaned rows
             currentRecipe.Instructions = tbInstructions.Text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-                .Select((t, i) => new Instruction(currentRecipe) { Text = t, InstructionId = i, parent = currentRecipe }).ToList();
+                .Select((t, i) => new Instruction(currentRecipe) { Text = t, InstructionId = i, Parent = currentRecipe }).ToList();
 
             currentRecipe.Commit();
 
@@ -452,9 +463,10 @@ namespace Flambe
                 return;
             }
 
-
             if (currentRecipe == null)
+            {
                 currentRecipe = new Recipe();
+            }
 
             if (currentIngredient == null)
             {

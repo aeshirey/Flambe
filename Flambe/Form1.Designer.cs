@@ -1,6 +1,9 @@
 ﻿namespace Flambe
 {
-    partial class formMain
+    /// <summary>
+    /// Flambe's GUI
+    /// </summary>
+    public partial class formMain
     {
         /// <summary>
         /// Required designer variable.
@@ -17,6 +20,7 @@
             {
                 components.Dispose();
             }
+
             base.Dispose(disposing);
         }
 
@@ -28,56 +32,56 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tabControl = new System.Windows.Forms.TabControl();
-            this.tabSearch = new System.Windows.Forms.TabPage();
-            this.tbSearch = new System.Windows.Forms.TextBox();
-            this.lvAllRecipes = new System.Windows.Forms.ListView();
-            this.tabView = new System.Windows.Forms.TabPage();
-            this.webBrowser1 = new System.Windows.Forms.WebBrowser();
-            this.tabCreate = new System.Windows.Forms.TabPage();
-            this.tbComment = new System.Windows.Forms.TextBox();
-            this.lblComment = new System.Windows.Forms.Label();
-            this.btnSaveRecipe = new System.Windows.Forms.Button();
-            this.gbInstructions = new System.Windows.Forms.GroupBox();
-            this.tbInstructions = new System.Windows.Forms.TextBox();
-            this.gbIngredients = new System.Windows.Forms.GroupBox();
-            this.cbIsOptional = new System.Windows.Forms.CheckBox();
-            this.tbRemarks = new System.Windows.Forms.TextBox();
-            this.tbItem = new System.Windows.Forms.TextBox();
-            this.tbUnits = new System.Windows.Forms.TextBox();
-            this.tbQuantity = new System.Windows.Forms.TextBox();
-            this.lvIngredients = new System.Windows.Forms.ListView();
-            this.tbCookTime = new System.Windows.Forms.TextBox();
-            this.lblCookTime = new System.Windows.Forms.Label();
-            this.tbPrepTime = new System.Windows.Forms.TextBox();
-            this.lblPrepTime = new System.Windows.Forms.Label();
-            this.tbServings = new System.Windows.Forms.TextBox();
-            this.lblServings = new System.Windows.Forms.Label();
-            this.cbCuisine = new System.Windows.Forms.ComboBox();
-            this.lblCuisine = new System.Windows.Forms.Label();
-            this.cbCategory = new System.Windows.Forms.ComboBox();
-            this.lblCategory = new System.Windows.Forms.Label();
-            this.cbCredit = new System.Windows.Forms.ComboBox();
-            this.lblCredit = new System.Windows.Forms.Label();
-            this.tbName = new System.Windows.Forms.TextBox();
-            this.lblName = new System.Windows.Forms.Label();
-            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
-            this.statusLabelGeneralPurpose = new System.Windows.Forms.ToolStripStatusLabel();
-            this.statusLabelSpacer = new System.Windows.Forms.ToolStripStatusLabel();
-            this.statusLabelFlambeLink = new System.Windows.Forms.ToolStripStatusLabel();
-            this.tabControl.SuspendLayout();
-            this.tabSearch.SuspendLayout();
-            this.tabView.SuspendLayout();
-            this.tabCreate.SuspendLayout();
-            this.gbInstructions.SuspendLayout();
-            this.gbIngredients.SuspendLayout();
-            this.statusStrip1.SuspendLayout();
-            this.SuspendLayout();
+            tabControl = new System.Windows.Forms.TabControl();
+            tabSearch = new System.Windows.Forms.TabPage();
+            tbSearch = new System.Windows.Forms.TextBox();
+            lvAllRecipes = new System.Windows.Forms.ListView();
+            tabView = new System.Windows.Forms.TabPage();
+            webBrowser1 = new System.Windows.Forms.WebBrowser();
+            tabCreate = new System.Windows.Forms.TabPage();
+            tbComment = new System.Windows.Forms.TextBox();
+            lblComment = new System.Windows.Forms.Label();
+            btnSaveRecipe = new System.Windows.Forms.Button();
+            gbInstructions = new System.Windows.Forms.GroupBox();
+            tbInstructions = new System.Windows.Forms.TextBox();
+            gbIngredients = new System.Windows.Forms.GroupBox();
+            cbIsOptional = new System.Windows.Forms.CheckBox();
+            tbRemarks = new System.Windows.Forms.TextBox();
+            tbItem = new System.Windows.Forms.TextBox();
+            tbUnits = new System.Windows.Forms.TextBox();
+            tbQuantity = new System.Windows.Forms.TextBox();
+            lvIngredients = new System.Windows.Forms.ListView();
+            tbCookTime = new System.Windows.Forms.TextBox();
+            lblCookTime = new System.Windows.Forms.Label();
+            tbPrepTime = new System.Windows.Forms.TextBox();
+            lblPrepTime = new System.Windows.Forms.Label();
+            tbServings = new System.Windows.Forms.TextBox();
+            lblServings = new System.Windows.Forms.Label();
+            cbCuisine = new System.Windows.Forms.ComboBox();
+            lblCuisine = new System.Windows.Forms.Label();
+            cbCategory = new System.Windows.Forms.ComboBox();
+            lblCategory = new System.Windows.Forms.Label();
+            cbCredit = new System.Windows.Forms.ComboBox();
+            lblCredit = new System.Windows.Forms.Label();
+            tbName = new System.Windows.Forms.TextBox();
+            lblName = new System.Windows.Forms.Label();
+            statusStrip1 = new System.Windows.Forms.StatusStrip();
+            statusLabelGeneralPurpose = new System.Windows.Forms.ToolStripStatusLabel();
+            statusLabelSpacer = new System.Windows.Forms.ToolStripStatusLabel();
+            statusLabelFlambeLink = new System.Windows.Forms.ToolStripStatusLabel();
+            tabControl.SuspendLayout();
+            tabSearch.SuspendLayout();
+            tabView.SuspendLayout();
+            tabCreate.SuspendLayout();
+            gbInstructions.SuspendLayout();
+            gbIngredients.SuspendLayout();
+            statusStrip1.SuspendLayout();
+            SuspendLayout();
             // 
             // tabControl
             // 
-            this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.tabControl.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl.Controls.Add(this.tabSearch);
             this.tabControl.Controls.Add(this.tabView);
@@ -105,7 +109,7 @@
             // 
             // tbSearch
             // 
-            this.tbSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.tbSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbSearch.Location = new System.Drawing.Point(3, 295);
             this.tbSearch.Margin = new System.Windows.Forms.Padding(2);
@@ -116,8 +120,8 @@
             // 
             // lvAllRecipes
             // 
-            this.lvAllRecipes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.lvAllRecipes.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lvAllRecipes.FullRowSelect = true;
             this.lvAllRecipes.Location = new System.Drawing.Point(3, 3);
@@ -186,7 +190,7 @@
             // 
             // tbComment
             // 
-            this.tbComment.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.tbComment.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbComment.Location = new System.Drawing.Point(280, 81);
             this.tbComment.Margin = new System.Windows.Forms.Padding(2);
@@ -218,8 +222,8 @@
             // 
             // gbInstructions
             // 
-            this.gbInstructions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.gbInstructions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.gbInstructions.Controls.Add(this.tbInstructions);
             this.gbInstructions.Location = new System.Drawing.Point(8, 231);
@@ -233,8 +237,8 @@
             // 
             // tbInstructions
             // 
-            this.tbInstructions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.tbInstructions.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbInstructions.Location = new System.Drawing.Point(4, 16);
             this.tbInstructions.Margin = new System.Windows.Forms.Padding(2);
@@ -245,7 +249,7 @@
             // 
             // gbIngredients
             // 
-            this.gbIngredients.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.gbIngredients.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.gbIngredients.Controls.Add(this.cbIsOptional);
             this.gbIngredients.Controls.Add(this.tbRemarks);
@@ -287,7 +291,7 @@
             // 
             // tbItem
             // 
-            this.tbItem.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.tbItem.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbItem.Location = new System.Drawing.Point(136, 93);
             this.tbItem.Margin = new System.Windows.Forms.Padding(2);
@@ -318,8 +322,8 @@
             // 
             // lvIngredients
             // 
-            this.lvIngredients.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
+            this.lvIngredients.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)
+            | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.lvIngredients.FullRowSelect = true;
             this.lvIngredients.HideSelection = false;
@@ -334,7 +338,7 @@
             // 
             // tbCookTime
             // 
-            this.tbCookTime.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.tbCookTime.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbCookTime.Location = new System.Drawing.Point(280, 58);
             this.tbCookTime.Margin = new System.Windows.Forms.Padding(2);
@@ -354,7 +358,7 @@
             // 
             // tbPrepTime
             // 
-            this.tbPrepTime.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.tbPrepTime.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbPrepTime.Location = new System.Drawing.Point(280, 33);
             this.tbPrepTime.Margin = new System.Windows.Forms.Padding(2);
@@ -374,7 +378,7 @@
             // 
             // tbServings
             // 
-            this.tbServings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            this.tbServings.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left)
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbServings.Location = new System.Drawing.Point(280, 7);
             this.tbServings.Margin = new System.Windows.Forms.Padding(2);
@@ -571,4 +575,3 @@
         private System.Windows.Forms.Label lblComment;
     }
 }
-

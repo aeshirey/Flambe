@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SQLite;
-
-namespace Flambe
+﻿namespace Flambe
 {
+    using System;
+    using SQLite;
+
     public class Ingredient
     {
-        public Recipe parent;
+        public Recipe Parent;
 
         [PrimaryKey, AutoIncrement]
         public int IngredientId { get; set; }
@@ -23,11 +19,13 @@ namespace Flambe
         public int GroupOrder { get; set; }
         public int IngredientOrder { get; set; }
 
+        public Ingredient()
+        { 
+        }
 
-        public Ingredient() { }
         public Ingredient(Recipe recipe)
         {
-            parent = recipe;
+            Parent = recipe;
         }
 
         public bool Delete()
@@ -37,9 +35,9 @@ namespace Flambe
                 return false;
             }
 
-            FlambeDB.connection.Delete<Ingredient>(this.IngredientId);
+            FlambeDB.DbConnection.Delete<Ingredient>(this.IngredientId);
 
-            parent.Ingredients.Remove(this);
+            Parent.Ingredients.Remove(this);
             return true;
         }
 
@@ -47,20 +45,21 @@ namespace Flambe
         {
             if (RecipeId == 0)
             {
-                if (parent == null || parent.RecipeId == 0)
+                if (Parent == null || Parent.RecipeId == 0)
                 {
                     throw new InvalidOperationException("Can't get parent recipe id");
                 }
-                RecipeId = parent.RecipeId;
+
+                RecipeId = Parent.RecipeId;
             }
 
             if (IngredientId == 0)
             {
-                IngredientId = FlambeDB.connection.Insert(this);
+                IngredientId = FlambeDB.DbConnection.Insert(this);
             }
             else
             {
-                FlambeDB.connection.Update(this);
+                FlambeDB.DbConnection.Update(this);
             }
         }
     }
