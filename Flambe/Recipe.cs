@@ -2,7 +2,9 @@
 {
     using System;
     using System.Collections.Generic;
+    using System.Collections.Specialized;
     using System.Linq;
+    using System.Net;
     using System.Net.Http;
     using System.Text;
     using System.Threading.Tasks;
@@ -248,7 +250,8 @@
             }
 
             var jss = new JavaScriptSerializer();
-            return jss.Serialize(this);
+            var serialized = jss.Serialize(this);
+            return serialized;
         }
 
         internal void Delete()
@@ -264,6 +267,23 @@
             }
 
             FlambeDB.DbConnection.Delete<Recipe>(this.RecipeId);
+        }
+
+        internal int? Upload()
+        {
+            using (var client = new WebClient())
+            {
+                var payload = new NameValueCollection()
+                {
+                    { "json", ToJson() }
+                };
+
+                var response = client.UploadValues(string.Format(JsonUrl, 0), payload);
+                var decoded = Encoding.UTF8.GetString(response);
+
+                int result;
+                return int.TryParse(decoded, out result) ? result : (int?)null;
+            }
         }
 
         private static Recipe FromJson(string json)

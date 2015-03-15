@@ -34,14 +34,22 @@
                 var mi = new MenuItem("Open re&cipe", lvAllRecipes_DoubleClick) { Tag = recipe };
                 cm.MenuItems.Add(mi);
 
-                mi = new MenuItem("P&rint recipe") { Tag = recipe };
-                cm.MenuItems.Add(mi);
+                ////mi = new MenuItem("P&rint recipe") { Tag = recipe };
+                ////cm.MenuItems.Add(mi);
 
                 mi = new MenuItem("&Edit recipe") { Tag = recipe };
                 mi.Click += new EventHandler((obj, args) => EditRecipe(recipe));
                 cm.MenuItems.Add(mi);
 
                 mi = new MenuItem("Uplo&ad recipe") { Tag = recipe };
+                mi.Click += new EventHandler((obj, args) =>
+                {
+                    int? onlineId = recipe.Upload();
+                    if (onlineId.HasValue)
+                    {
+                        Process.Start(string.Format(Recipe.CardUrl, onlineId.Value));
+                    }
+                });
                 cm.MenuItems.Add(mi);
 
                 mi = new MenuItem("&Delete recipe") { Tag = recipe };
@@ -108,8 +116,7 @@
                     }
                 });
                 cm.MenuItems.Add(mi);
-
-
+                
                 if (Control.ModifierKeys == Keys.Control)
                 {
                     mi = new MenuItem("To &JSON") { Tag = recipe };
