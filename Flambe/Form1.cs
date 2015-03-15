@@ -380,6 +380,42 @@
                 });
                 cm.MenuItems.Add(mi);
                 ContextMenu = cm;
+
+                mi = new MenuItem("Download Recipe");
+                mi.Click += new EventHandler((obj, args) =>
+                {
+                    int id;
+                    var dd = new DownloadDialog();
+                    if (dd.ShowDialog(this) == System.Windows.Forms.DialogResult.Cancel
+                        || !int.TryParse(dd.tbRecipeId.Text.Trim(), out id))
+                    {
+                        return;
+                    }
+
+                    var downloaded = Recipe.DownloadRecipe(id);
+                    if (downloaded == null)
+                    {
+                        var response = MessageBox.Show("Unable to download recipe #" + id.ToString() + ". Please confirm it exists. Visit recipe page now?", "Can't download recipe", MessageBoxButtons.YesNo);
+                        if (response == System.Windows.Forms.DialogResult.Yes)
+                        {
+                            Process.Start(string.Format(Recipe.CardUrl, id));
+                        }
+                    }
+                    else
+                    {
+                        downloaded.Commit();
+                        displayRecipes();
+                    }
+                });
+                cm.MenuItems.Add(mi);
+
+                ////mi = new MenuItem("To &JSON") { Tag = recipe };
+                ////mi.Click += new EventHandler((obj, args) =>
+                ////{
+                ////    var json = recipe.ToJson();
+                ////    MessageBox.Show(json);
+                ////});
+                ////cm.MenuItems.Add(mi);
             }
         }
 

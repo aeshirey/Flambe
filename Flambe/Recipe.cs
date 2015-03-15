@@ -3,11 +3,16 @@
     using System;
     using System.Collections.Generic;
     using System.Linq;
+    using System.Net.Http;
     using System.Text;
+    using System.Web.Script.Serialization;
     using SQLite;
 
     public class Recipe
     {
+        public const string JsonUrl = "http://flambe.dingostick.com/recipes/json.php?rowid={0}";
+        public const string CardUrl = "http://flambe.dingostick.com/recipes/view.php?rowid={0}";
+        
         [PrimaryKey, AutoIncrement]
         public int RecipeId { get; set; }
         public string Name { get; set; }
@@ -26,6 +31,40 @@
         {
             this.Ingredients = new List<Ingredient>();
             this.Instructions = new List<Instruction>();
+        }
+
+        public static Recipe DownloadRecipe(int recipeId)
+        {
+            var url = string.Format(JsonUrl, recipeId);
+
+            using (var client = new HttpClient())
+            {
+                var response = client.GetAsync(new Uri(url)).Result;
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = response.Content.ReadAsStringAsync().Result.TrimEnd();
+                    var deserialized = FromJson(json);
+
+                    // setup for committing
+                    deserialized.RecipeId = 0;
+
+                    foreach (var ingredient in deserialized.Ingredients)
+                    {
+                        ingredient.Parent = deserialized;
+                        ingredient.RecipeId = 0;
+                    }
+
+                    foreach (var instruction in deserialized.Instructions)
+                    {
+                        instruction.Parent = deserialized;
+                        instruction.RecipeId = 0;
+                    }
+
+                    return deserialized;
+                }
+            }
+
+            return null;
         }
 
         public void Commit()
@@ -132,6 +171,23 @@
             return sb.ToString();
         }
 
+        public string ToJson()
+        {
+            // kill all circular references
+            foreach (var ingredient in Ingredients)
+            {
+                ingredient.Parent = null;
+            }
+
+            foreach (var instruction in Instructions)
+            {
+                instruction.Parent = null;
+            }
+
+            var jss = new JavaScriptSerializer();
+            return jss.Serialize(this);
+        }
+
         internal void Delete()
         {
             foreach (var ingredient in this.Ingredients)
@@ -145,6 +201,19 @@
             }
 
             FlambeDB.DbConnection.Delete<Recipe>(this.RecipeId);
+        }
+
+        private static Recipe FromJson(string json)
+        {
+            var jss = new JavaScriptSerializer();
+            try
+            {
+                return jss.Deserialize<Recipe>(json);
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }
