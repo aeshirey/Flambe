@@ -109,13 +109,24 @@
                 });
                 cm.MenuItems.Add(mi);
 
-                ////mi = new MenuItem("To &JSON") { Tag = recipe };
-                ////mi.Click += new EventHandler((obj, args) =>
-                ////{
-                ////    var json = recipe.ToJson();
-                ////    MessageBox.Show(json);
-                ////});
-                ////cm.MenuItems.Add(mi);
+
+                if (Control.ModifierKeys == Keys.Control)
+                {
+                    mi = new MenuItem("To &JSON") { Tag = recipe };
+                    mi.Click += new EventHandler((obj, args) =>
+                    {
+                        var json = recipe.ToJson();
+                        MessageBox.Show(json);
+                    });
+                    cm.MenuItems.Add(mi);
+
+                    mi = new MenuItem("Vac&uum Database");
+                    mi.Click += new EventHandler((obj, args) =>
+                    {
+                        FlambeDB.DbConnection.Execute("VACUUM");
+                    });
+                    cm.MenuItems.Add(mi);
+                }
             }
         }
 

@@ -338,6 +338,13 @@
                     WindowState = FormWindowState.Maximized;
                 }
             }
+            else if ((e.KeyValue == 'n' || e.KeyValue == 'N') && Control.ModifierKeys.HasFlag(Keys.Control))
+            {
+                // new recipe
+                ClearRecipe();
+                tabControl.SelectedIndex = 2;
+                tbName.Focus();
+            }
         }
     }
 }
