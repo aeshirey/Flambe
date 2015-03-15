@@ -96,6 +96,15 @@
             ClearRecipe();
         }
 
+        private void tbQuantity_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar == ' ')
+            {
+                tbUnits.Focus();
+                tbQuantity.Text = tbQuantity.Text.Trim();
+            }
+        }
+
         private void allIngredients_KeyPress(object sender, KeyPressEventArgs e)
         {
             if (e.KeyChar != 13)

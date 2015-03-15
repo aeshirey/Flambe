@@ -90,7 +90,7 @@
             this.tabControl.Margin = new System.Windows.Forms.Padding(2);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(544, 334);
+            this.tabControl.Size = new System.Drawing.Size(544, 351);
             this.tabControl.TabIndex = 0;
             // 
             // tabSearch
@@ -101,7 +101,7 @@
             this.tabSearch.Margin = new System.Windows.Forms.Padding(2);
             this.tabSearch.Name = "tabSearch";
             this.tabSearch.Padding = new System.Windows.Forms.Padding(2);
-            this.tabSearch.Size = new System.Drawing.Size(536, 308);
+            this.tabSearch.Size = new System.Drawing.Size(536, 325);
             this.tabSearch.TabIndex = 0;
             this.tabSearch.Text = "Search";
             this.tabSearch.ToolTipText = "Find or browse recipes";
@@ -111,10 +111,10 @@
             // 
             this.tbSearch.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbSearch.Location = new System.Drawing.Point(3, 295);
+            this.tbSearch.Location = new System.Drawing.Point(3, 303);
             this.tbSearch.Margin = new System.Windows.Forms.Padding(2);
             this.tbSearch.Name = "tbSearch";
-            this.tbSearch.Size = new System.Drawing.Size(536, 20);
+            this.tbSearch.Size = new System.Drawing.Size(529, 20);
             this.tbSearch.TabIndex = 2;
             this.tbSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbSearch_KeyDown);
             // 
@@ -128,7 +128,7 @@
             this.lvAllRecipes.Margin = new System.Windows.Forms.Padding(2);
             this.lvAllRecipes.MultiSelect = false;
             this.lvAllRecipes.Name = "lvAllRecipes";
-            this.lvAllRecipes.Size = new System.Drawing.Size(536, 291);
+            this.lvAllRecipes.Size = new System.Drawing.Size(529, 296);
             this.lvAllRecipes.TabIndex = 1;
             this.lvAllRecipes.UseCompatibleStateImageBehavior = false;
             this.lvAllRecipes.SelectedIndexChanged += new System.EventHandler(this.lvAllRecipes_SelectedIndexChanged);
@@ -143,7 +143,7 @@
             this.tabView.Location = new System.Drawing.Point(4, 22);
             this.tabView.Margin = new System.Windows.Forms.Padding(2);
             this.tabView.Name = "tabView";
-            this.tabView.Size = new System.Drawing.Size(536, 308);
+            this.tabView.Size = new System.Drawing.Size(536, 325);
             this.tabView.TabIndex = 2;
             this.tabView.Text = "View";
             this.tabView.UseVisualStyleBackColor = true;
@@ -155,7 +155,7 @@
             this.webBrowser1.Margin = new System.Windows.Forms.Padding(2);
             this.webBrowser1.MinimumSize = new System.Drawing.Size(10, 10);
             this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.Size = new System.Drawing.Size(536, 308);
+            this.webBrowser1.Size = new System.Drawing.Size(536, 325);
             this.webBrowser1.TabIndex = 0;
             // 
             // tabCreate
@@ -183,7 +183,7 @@
             this.tabCreate.Margin = new System.Windows.Forms.Padding(2);
             this.tabCreate.Name = "tabCreate";
             this.tabCreate.Padding = new System.Windows.Forms.Padding(2);
-            this.tabCreate.Size = new System.Drawing.Size(536, 308);
+            this.tabCreate.Size = new System.Drawing.Size(536, 325);
             this.tabCreate.TabIndex = 1;
             this.tabCreate.Text = "Create";
             this.tabCreate.ToolTipText = "Create a new recipe";
@@ -212,7 +212,7 @@
             // btnSaveRecipe
             // 
             this.btnSaveRecipe.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.btnSaveRecipe.Location = new System.Drawing.Point(465, 290);
+            this.btnSaveRecipe.Location = new System.Drawing.Point(465, 307);
             this.btnSaveRecipe.Margin = new System.Windows.Forms.Padding(2);
             this.btnSaveRecipe.Name = "btnSaveRecipe";
             this.btnSaveRecipe.Size = new System.Drawing.Size(72, 21);
@@ -231,7 +231,7 @@
             this.gbInstructions.Margin = new System.Windows.Forms.Padding(2);
             this.gbInstructions.Name = "gbInstructions";
             this.gbInstructions.Padding = new System.Windows.Forms.Padding(2);
-            this.gbInstructions.Size = new System.Drawing.Size(528, 56);
+            this.gbInstructions.Size = new System.Drawing.Size(528, 73);
             this.gbInstructions.TabIndex = 0;
             this.gbInstructions.TabStop = false;
             this.gbInstructions.Text = "Instructions";
@@ -245,7 +245,7 @@
             this.tbInstructions.Margin = new System.Windows.Forms.Padding(2);
             this.tbInstructions.Multiline = true;
             this.tbInstructions.Name = "tbInstructions";
-            this.tbInstructions.Size = new System.Drawing.Size(524, 38);
+            this.tbInstructions.Size = new System.Drawing.Size(524, 55);
             this.tbInstructions.TabIndex = 0;
             // 
             // gbIngredients
@@ -320,6 +320,7 @@
             this.tbQuantity.Size = new System.Drawing.Size(36, 20);
             this.tbQuantity.TabIndex = 1;
             this.tbQuantity.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.allIngredients_KeyPress);
+            this.tbQuantity.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbQuantity_KeyPress);
             // 
             // lvIngredients
             // 
@@ -399,6 +400,8 @@
             // 
             // cbCuisine
             // 
+            this.cbCuisine.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cbCuisine.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.cbCuisine.FormattingEnabled = true;
             this.cbCuisine.Location = new System.Drawing.Point(66, 81);
             this.cbCuisine.Margin = new System.Windows.Forms.Padding(2);
@@ -418,6 +421,8 @@
             // 
             // cbCategory
             // 
+            this.cbCategory.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cbCategory.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.cbCategory.FormattingEnabled = true;
             this.cbCategory.Location = new System.Drawing.Point(66, 56);
             this.cbCategory.Margin = new System.Windows.Forms.Padding(2);
@@ -437,6 +442,8 @@
             // 
             // cbCredit
             // 
+            this.cbCredit.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.SuggestAppend;
+            this.cbCredit.AutoCompleteSource = System.Windows.Forms.AutoCompleteSource.ListItems;
             this.cbCredit.FormattingEnabled = true;
             this.cbCredit.Location = new System.Drawing.Point(66, 32);
             this.cbCredit.Margin = new System.Windows.Forms.Padding(2);

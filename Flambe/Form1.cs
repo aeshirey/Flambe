@@ -75,17 +75,38 @@
             var credits = new HashSet<string>();
             var cuisines = new HashSet<string>();
             var categories = new HashSet<string>();
+            var servings = new HashSet<string>();
 
             foreach (var recipe in FlambeDB.DbConnection.Table<Recipe>())
             {
                 credits.Add(recipe.Credit);
                 cuisines.Add(recipe.Cuisine);
                 categories.Add(recipe.Category);
+
+                servings.Add(recipe.Servings);
             }
 
             cbCredit.Items.AddRange(credits.OrderBy(c => c).ToArray());
             cbCuisine.Items.AddRange(cuisines.OrderBy(c => c).ToArray());
             cbCategory.Items.AddRange(categories.OrderBy(c => c).ToArray());
+
+            var servAC = new AutoCompleteStringCollection();
+            servAC.AddRange(servings.OrderBy(s => s).ToArray());
+            tbServings.AutoCompleteCustomSource = servAC;
+            tbServings.AutoCompleteSource = AutoCompleteSource.CustomSource;
+            tbServings.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
+
+            // ingredients auto-complete
+            var itemAC = new AutoCompleteStringCollection();
+            var ingredients = FlambeDB.DbConnection.Table<Ingredient>().ToList();
+            itemAC.AddRange(ingredients
+                .Select(ing => ing.Item)
+                .Where(item => !string.IsNullOrWhiteSpace(item))
+                .Distinct()
+                .ToArray());
+            tbItem.AutoCompleteCustomSource = itemAC;
+            tbItem.AutoCompleteSource = AutoCompleteSource.CustomSource;
+            tbItem.AutoCompleteMode = AutoCompleteMode.SuggestAppend;
         }
 
         private void initStatusStrip()
@@ -297,6 +318,11 @@
             }
         }
 
+        /// <summary>
+        /// Handle KeyDown events, specifically to account for F11 fullscren functionality
+        /// </summary>
+        /// <param name="sender">The source of the keypress</param>
+        /// <param name="e">Which key was pressed</param>
         private void formMain_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.F11)
