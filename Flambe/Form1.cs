@@ -92,6 +92,11 @@
         {
             // for storing the recipe name or whatever
             statusStrip1.Items.Add(new ToolStripStatusLabel(string.Empty));
+
+            var currentVersion = typeof(formMain).Assembly.GetName().Version;
+            var currentStr = string.Format("{0}.{1}.{2}", currentVersion.Major, currentVersion.MajorRevision, currentVersion.Minor);
+
+            statusLabelFlambeLink.Text = "Flambe " + currentStr;
         }
         #endregion
 
@@ -288,6 +293,23 @@
                             Process.Start(ExeUrl);
                         }
                     }
+                }
+            }
+        }
+
+        private void formMain_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.F11)
+            {
+                if (FormBorderStyle == FormBorderStyle.None)
+                {
+                    FormBorderStyle = FormBorderStyle.Sizable;
+                    WindowState = FormWindowState.Normal;
+                }
+                else
+                {
+                    FormBorderStyle = FormBorderStyle.None;
+                    WindowState = FormWindowState.Maximized;
                 }
             }
         }

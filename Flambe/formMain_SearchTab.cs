@@ -141,34 +141,30 @@
                 tbSearch.Text = string.Empty;
                 displayRecipes();
             }
-            else if (e.KeyCode == Keys.Back || e.KeyCode == Keys.Delete)
-            {
-                MessageBox.Show("delete!");
-            }
         }
 
         private void lvAllRecipes_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Delete && lvAllRecipes.SelectedItems.Count > 0)
             {
-                foreach (ListViewItem item in lvAllRecipes.SelectedItems)
+                var recipe = lvAllRecipes.SelectedItems[0].Tag as Recipe;
+                if (Control.ModifierKeys == Keys.Shift
+                    || MessageBox.Show("Are you sure you want to delete '" + recipe.Name + "' from your database?", "Delete recipe?", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
                 {
-                    var recipe = item.Tag as Recipe;
                     recipe.Delete();
+                    displayRecipes();
                 }
-
-                displayRecipes();
             }
         }
 
         private void lvAllRecipes_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (((ListView)sender).SelectedItems.Count == 0)
+            if (lvAllRecipes.SelectedItems.Count == 0)
             {
                 return;
             }
 
-            var recipe = ((ListView)sender).SelectedItems[0].Tag as Recipe;
+            var recipe = lvAllRecipes.SelectedItems[0].Tag as Recipe;
             statusStrip1.Items[0].Text = recipe.Name + (string.IsNullOrEmpty(recipe.Credit) ? string.Empty : " by " + recipe.Credit);
         }
     }

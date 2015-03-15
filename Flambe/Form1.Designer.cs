@@ -514,10 +514,12 @@
             this.ClientSize = new System.Drawing.Size(556, 381);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.tabControl);
+            this.KeyPreview = true;
             this.Margin = new System.Windows.Forms.Padding(2);
             this.MinimumSize = new System.Drawing.Size(408, 401);
             this.Name = "formMain";
             this.Text = "Flambe";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.formMain_KeyDown);
             this.tabControl.ResumeLayout(false);
             this.tabSearch.ResumeLayout(false);
             this.tabSearch.PerformLayout();
