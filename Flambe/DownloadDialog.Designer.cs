@@ -1,7 +1,12 @@
 ﻿namespace Flambe
 {
+    /// <summary>
+    /// A dialog used for downloading recipes from flambe.dingostick.com/recipes
+    /// </summary>
     public partial class DownloadDialog
     {
+        internal System.Windows.Forms.TextBox tbRecipeId;
+
         /// <summary>
         /// Required designer variable.
         /// </summary>
@@ -40,7 +45,7 @@
             this.tbRecipeId.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbRecipeId.Location = new System.Drawing.Point(16, 29);
-            this.tbRecipeId.MaxLength = 10;
+            this.tbRecipeId.MaxLength = 200;
             this.tbRecipeId.Name = "tbRecipeId";
             this.tbRecipeId.Size = new System.Drawing.Size(205, 20);
             this.tbRecipeId.TabIndex = 0;
@@ -62,7 +67,7 @@
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 2;
-            this.button1.Text = "Downlo&ad";
+            this.button1.Text = "&Download";
             this.button1.UseVisualStyleBackColor = true;
             // 
             // button2
@@ -92,8 +97,6 @@
         }
 
         #endregion
-
-        internal System.Windows.Forms.TextBox tbRecipeId;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button button2;

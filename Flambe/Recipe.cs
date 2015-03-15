@@ -5,6 +5,7 @@
     using System.Linq;
     using System.Net.Http;
     using System.Text;
+    using System.Threading.Tasks;
     using System.Web.Script.Serialization;
     using SQLite;
 
@@ -12,7 +13,7 @@
     {
         public const string JsonUrl = "http://flambe.dingostick.com/recipes/json.php?rowid={0}";
         public const string CardUrl = "http://flambe.dingostick.com/recipes/view.php?rowid={0}";
-        
+
         [PrimaryKey, AutoIncrement]
         public int RecipeId { get; set; }
         public string Name { get; set; }
@@ -33,7 +34,59 @@
             this.Instructions = new List<Instruction>();
         }
 
-        public static Recipe DownloadRecipe(int recipeId)
+        /// <summary>
+        /// Take a list of recipe ids and attempt to download them all
+        /// </summary>
+        /// <param name="recipeIds">A string containing comma-separated ids and ranges, such as "90140, 90110-90112, 99055"</param>
+        /// <returns>A Tuple&lt;int,int&gt; indicating how many downloads succeeded and how many were attempted</returns>
+        public static async Task<Tuple<int, int>> DownloadRecipe(string recipeIds)
+        {
+            var csvs = recipeIds.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+            var allIds = new List<int>();
+
+            int succeeded = 0, attempted = 0;
+            foreach (var csv in csvs)
+            {
+                if (csv.Count(c => c == '-') > 1)
+                {
+                    continue;
+                }
+
+                if (csv.IndexOf('-') == -1)
+                {
+                    int id;
+                    if (int.TryParse(csv.Trim(), out id))
+                    {
+                        allIds.Add(id);
+                    }
+                }
+                else
+                {
+                    var bounds = csv.Split('-');
+
+                    int low, high;
+                    if (int.TryParse(bounds[0], out low) && int.TryParse(bounds[1], out high) && low <= high)
+                    {
+                        allIds.AddRange(Enumerable.Range(low, high - low + 1));
+                    }
+                }
+            }
+
+            foreach (var id in allIds)
+            {
+                if (await DownloadRecipe(id))
+                {
+                    succeeded++;
+                }
+
+                attempted++;
+            }
+
+            return new Tuple<int, int>(succeeded, attempted);
+        }
+
+        public static async Task<bool> DownloadRecipe(int recipeId)
         {
             var url = string.Format(JsonUrl, recipeId);
 
@@ -42,8 +95,17 @@
                 var response = client.GetAsync(new Uri(url)).Result;
                 if (response.IsSuccessStatusCode)
                 {
-                    var json = response.Content.ReadAsStringAsync().Result.TrimEnd();
-                    var deserialized = FromJson(json);
+                    var json = await response.Content.ReadAsStringAsync();
+
+                    Recipe deserialized;
+                    try
+                    {
+                        deserialized = FromJson(json.Trim());
+                    }
+                    catch
+                    {
+                        return false;
+                    }
 
                     // setup for committing
                     deserialized.RecipeId = 0;
@@ -60,11 +122,12 @@
                         instruction.RecipeId = 0;
                     }
 
-                    return deserialized;
+                    deserialized.Commit();
+                    return true;
                 }
             }
 
-            return null;
+            return false;
         }
 
         public void Commit()
@@ -173,7 +236,7 @@
 
         public string ToJson()
         {
-            // kill all circular references
+            // kill all circular references prior to serialization
             foreach (var ingredient in Ingredients)
             {
                 ingredient.Parent = null;

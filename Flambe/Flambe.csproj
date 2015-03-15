@@ -76,6 +76,12 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="formMain_CreateTab.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="formMain_SearchTab.cs">
+      <SubType>Form</SubType>
+    </Compile>
     <Compile Include="Ingredient.cs" />
     <Compile Include="Instruction.cs" />
     <Compile Include="Program.cs" />
