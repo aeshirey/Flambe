@@ -5,8 +5,11 @@
     using System.ComponentModel;
     using System.Drawing;
     using System.Linq;
+    using System.Reflection;
     using System.Text.RegularExpressions;
     using System.Windows.Forms;
+    using System.Net.Http;
+    using System.Diagnostics;
 
     /// <summary>
     /// Flambe's core GUI logic
@@ -56,6 +59,7 @@
             displayRecipes();
             initComboBoxes();
             initStatusStrip();
+            CheckVersion();
         }
 
         protected override void OnClosing(CancelEventArgs e)
@@ -261,6 +265,9 @@
             }
         }
 
+        /// <summary>
+        /// Clears input data for creating a new recipe
+        /// </summary>
         private void ClearRecipe()
         {
             currentRecipe = null;
@@ -274,6 +281,37 @@
                 tbComment.Text = string.Empty;
             lvIngredients.Items.Clear();
             tbInstructions.Text = string.Empty;
+        }
+
+        /// <summary>
+        /// Checks to see whether the user has the newest version. If not, prompts to download.
+        /// </summary>
+        private async void CheckVersion()
+        {
+            const string VersionUrl = @"http://flambe.dingostick.com/current.version";
+            const string ExeUrl = @"http://flambe.dingostick.com/Flambe.zip";
+            var currentVersion = typeof(formMain).Assembly.GetName().Version;
+            var currentStr = string.Format("{0}.{1}.{2}", currentVersion.Major, currentVersion.MajorRevision, currentVersion.Minor);
+
+            using (var client = new HttpClient())
+            {
+                var response = await client.GetAsync(new Uri(VersionUrl));
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var newestVersion = response.Content.ReadAsStringAsync().Result.TrimEnd();
+
+                    if (newestVersion != currentStr)
+                    {
+                        var result = MessageBox.Show("There is a newer version of Flambe available. Download now?", "Newer version available", MessageBoxButtons.YesNo);
+
+                        if (result == System.Windows.Forms.DialogResult.Yes)
+                        {
+                            Process.Start(ExeUrl);
+                        }
+                    }
+                }
+            }
         }
         #endregion
 
