@@ -3,13 +3,12 @@
     using System;
     using System.Collections.Generic;
     using System.ComponentModel;
+    using System.Diagnostics;
     using System.Drawing;
     using System.Linq;
-    using System.Reflection;
+    using System.Net.Http;
     using System.Text.RegularExpressions;
     using System.Windows.Forms;
-    using System.Net.Http;
-    using System.Diagnostics;
 
     /// <summary>
     /// Flambe's core GUI logic
@@ -497,7 +496,9 @@
 
             if (string.IsNullOrWhiteSpace(tbItem.Text))
             {
-                // TODO: notify the user that the item must be present
+                var t = new ToolTip();
+                t.Show("'Item' is required", tbItem);
+
                 return;
             }
 
