@@ -115,7 +115,7 @@
             statusStrip1.Items.Add(new ToolStripStatusLabel(string.Empty));
 
             var currentVersion = typeof(formMain).Assembly.GetName().Version;
-            var currentStr = string.Format("{0}.{1}.{2}", currentVersion.Major, currentVersion.MajorRevision, currentVersion.Minor);
+            var currentStr = string.Format("{0}.{1}.{2}", currentVersion.Major, currentVersion.Minor, currentVersion.Build);
 
             statusLabelFlambeLink.Text = "Flambe " + currentStr;
         }
@@ -295,7 +295,7 @@
             const string VersionUrl = @"http://flambe.dingostick.com/current.version";
             const string ExeUrl = @"http://flambe.dingostick.com/Flambe.zip";
             var currentVersion = typeof(formMain).Assembly.GetName().Version;
-            var currentStr = string.Format("{0}.{1}.{2}", currentVersion.Major, currentVersion.MajorRevision, currentVersion.Minor);
+            var currentStr = string.Format("{0}.{1}.{2}", currentVersion.Major, currentVersion.Minor, currentVersion.Build);
 
             using (var client = new HttpClient())
             {
