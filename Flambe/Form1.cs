@@ -180,7 +180,7 @@
             }
 
             var numRecipes = this.lvAllRecipes.Items.Count;
-            statusLabelGeneralPurpose.Text = numRecipes == 1 ? "Displaying 1 recipe" : "Displaying " + numRecipes.ToString() + " recipes";
+            statusLabelGeneralPurpose.Text = numRecipes == 1 ? "Displaying 1 recipe" : "Displaying " + numRecipes + " recipes";
         }
 
         /// <summary>

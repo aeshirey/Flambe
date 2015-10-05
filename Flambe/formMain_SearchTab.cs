@@ -26,6 +26,8 @@
         {
             if (e.Button == System.Windows.Forms.MouseButtons.Right)
             {
+                bool isShift = Control.ModifierKeys.HasFlag(Keys.Shift);
+
                 var cm = new ContextMenu();
 
                 var recipe = lvAllRecipes.SelectedItems[0].Tag as Recipe;
@@ -56,8 +58,7 @@
                 mi.Click += new EventHandler((obj, args) =>
                 {
                     var taggedRecipe = ((MenuItem)obj).Tag as Recipe;
-                    var choice = MessageBox.Show("Are you sure you want to delete this recipe?", "Delete recipe?", MessageBoxButtons.YesNo);
-                    if (choice == System.Windows.Forms.DialogResult.Yes)
+                    if (isShift || DialogResult.Yes == MessageBox.Show("Are you sure you want to delete this recipe?", "Delete recipe?", MessageBoxButtons.YesNo))
                     {
                         for (int i = 0; i < lvAllRecipes.Items.Count; i++)
                         {
@@ -116,7 +117,7 @@
                     }
                 });
                 cm.MenuItems.Add(mi);
-                
+
                 if (Control.ModifierKeys == Keys.Control)
                 {
                     mi = new MenuItem("To &JSON") { Tag = recipe };
