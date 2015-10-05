@@ -134,7 +134,7 @@
             this.lvAllRecipes.SelectedIndexChanged += new System.EventHandler(this.lvAllRecipes_SelectedIndexChanged);
             this.lvAllRecipes.DoubleClick += new System.EventHandler(this.lvAllRecipes_DoubleClick);
             this.lvAllRecipes.KeyDown += new System.Windows.Forms.KeyEventHandler(this.lvAllRecipes_KeyDown);
-            this.lvAllRecipes.MouseClick += new System.Windows.Forms.MouseEventHandler(this.lvAllRecipes_MouseClick);
+            this.lvAllRecipes.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lvAllRecipes_MouseClick);
             this.lvAllRecipes.Resize += new System.EventHandler(this.lvAllRecipes_Resize);
             // 
             // tabView
@@ -319,7 +319,6 @@
             this.tbQuantity.Name = "tbQuantity";
             this.tbQuantity.Size = new System.Drawing.Size(36, 20);
             this.tbQuantity.TabIndex = 1;
-            this.tbQuantity.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.allIngredients_KeyPress);
             this.tbQuantity.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbQuantity_KeyPress);
             // 
             // lvIngredients

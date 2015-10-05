@@ -2,6 +2,7 @@
 {
     using System;
     using System.Diagnostics;
+    using System.Drawing;
     using System.Windows.Forms;
 
     /// <summary>
@@ -30,49 +31,62 @@
 
                 var cm = new ContextMenu();
 
-                var recipe = lvAllRecipes.SelectedItems[0].Tag as Recipe;
-                recipe.LoadChildren();
-
-                var mi = new MenuItem("Open re&cipe", lvAllRecipes_DoubleClick) { Tag = recipe };
-                cm.MenuItems.Add(mi);
-
-                ////mi = new MenuItem("P&rint recipe") { Tag = recipe };
-                ////cm.MenuItems.Add(mi);
-
-                mi = new MenuItem("&Edit recipe") { Tag = recipe };
-                mi.Click += new EventHandler((obj, args) => EditRecipe(recipe));
-                cm.MenuItems.Add(mi);
-
-                mi = new MenuItem("Uplo&ad recipe") { Tag = recipe };
-                mi.Click += new EventHandler((obj, args) =>
+                Recipe selectedRecipe = null;
+                foreach (ListViewItem item in lvAllRecipes.Items)
                 {
-                    int? onlineId = recipe.Upload();
-                    if (onlineId.HasValue)
+                    if (item.Bounds.Contains(new Point(e.X, e.Y)))
                     {
-                        Process.Start(string.Format(Recipe.CardUrl, onlineId.Value));
+                        selectedRecipe = item.Tag as Recipe;
+                        break;
                     }
-                });
-                cm.MenuItems.Add(mi);
+                }
 
-                mi = new MenuItem("&Delete recipe") { Tag = recipe };
-                mi.Click += new EventHandler((obj, args) =>
+                MenuItem mi;
+                if (selectedRecipe != null)
                 {
-                    var taggedRecipe = ((MenuItem)obj).Tag as Recipe;
-                    if (isShift || DialogResult.Yes == MessageBox.Show("Are you sure you want to delete this recipe?", "Delete recipe?", MessageBoxButtons.YesNo))
+                    selectedRecipe.LoadChildren();
+
+                    mi = new MenuItem("Open re&cipe", lvAllRecipes_DoubleClick) { Tag = selectedRecipe };
+                    cm.MenuItems.Add(mi);
+
+                    ////mi = new MenuItem("P&rint recipe") { Tag = selectedRecipe };
+                    ////cm.MenuItems.Add(mi);
+
+                    mi = new MenuItem("&Edit recipe") { Tag = selectedRecipe };
+                    mi.Click += new EventHandler((obj, args) => EditRecipe(selectedRecipe));
+                    cm.MenuItems.Add(mi);
+
+                    mi = new MenuItem("Uplo&ad recipe") { Tag = selectedRecipe };
+                    mi.Click += new EventHandler((obj, args) =>
                     {
-                        for (int i = 0; i < lvAllRecipes.Items.Count; i++)
+                        int? onlineId = selectedRecipe.Upload();
+                        if (onlineId.HasValue)
                         {
-                            if (lvAllRecipes.Items[i].Tag == taggedRecipe)
-                            {
-                                lvAllRecipes.Items.RemoveAt(i);
-                                break;
-                            }
+                            Process.Start(string.Format(Recipe.CardUrl, onlineId.Value));
                         }
+                    });
+                    cm.MenuItems.Add(mi);
 
-                        taggedRecipe.Delete();
-                    }
-                });
-                cm.MenuItems.Add(mi);
+                    mi = new MenuItem("&Delete recipe") { Tag = selectedRecipe };
+                    mi.Click += new EventHandler((obj, args) =>
+                    {
+                        var taggedRecipe = ((MenuItem)obj).Tag as Recipe;
+                        if (isShift || DialogResult.Yes == MessageBox.Show("Are you sure you want to delete this recipe?", "Delete recipe?", MessageBoxButtons.YesNo))
+                        {
+                            for (int i = 0; i < lvAllRecipes.Items.Count; i++)
+                            {
+                                if (lvAllRecipes.Items[i].Tag == taggedRecipe)
+                                {
+                                    lvAllRecipes.Items.RemoveAt(i);
+                                    break;
+                                }
+                            }
+
+                            taggedRecipe.Delete();
+                        }
+                    });
+                    cm.MenuItems.Add(mi);
+                }
 
                 mi = new MenuItem("&New recipe");
                 mi.Click += new EventHandler((obj, args) =>
@@ -120,13 +134,16 @@
 
                 if (Control.ModifierKeys == Keys.Control)
                 {
-                    mi = new MenuItem("To &JSON") { Tag = recipe };
-                    mi.Click += new EventHandler((obj, args) =>
+                    if (selectedRecipe != null)
                     {
-                        var json = recipe.ToJson();
-                        MessageBox.Show(json);
-                    });
-                    cm.MenuItems.Add(mi);
+                        mi = new MenuItem("To &JSON") { Tag = selectedRecipe };
+                        mi.Click += new EventHandler((obj, args) =>
+                        {
+                            var json = selectedRecipe.ToJson();
+                            MessageBox.Show(json);
+                        });
+                        cm.MenuItems.Add(mi);
+                    }
 
                     mi = new MenuItem("Vac&uum Database");
                     mi.Click += new EventHandler((obj, args) =>

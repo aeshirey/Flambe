@@ -99,12 +99,9 @@
                 {
                     var json = await response.Content.ReadAsStringAsync();
 
-                    Recipe deserialized;
-                    try
-                    {
-                        deserialized = FromJson(json.Trim());
-                    }
-                    catch
+                    Recipe deserialized = FromJson(json.Trim());
+                    
+                    if (deserialized == null)
                     {
                         return false;
                     }
