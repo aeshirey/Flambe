@@ -103,6 +103,7 @@
                 .Select(ing => ing.Item)
                 .Where(item => !string.IsNullOrWhiteSpace(item))
                 .Distinct()
+                .OrderBy(s => s)
                 .ToArray());
             tbItem.AutoCompleteCustomSource = itemAC;
             tbItem.AutoCompleteSource = AutoCompleteSource.CustomSource;
@@ -123,7 +124,7 @@
 
         private void toolStripStatusLabel2_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("http://flambe.dingostick.com");
+            System.Diagnostics.Process.Start("http://flambe.azurewebsites.net/");
         }
 
         /// <summary>
@@ -292,8 +293,8 @@
         /// </summary>
         private async void CheckVersion()
         {
-            const string VersionUrl = @"http://flambe.dingostick.com/current.version";
-            const string ExeUrl = @"http://flambe.dingostick.com/Flambe.zip";
+            const string VersionUrl = @"https://raw.githubusercontent.com/aeshirey/Flambe/master/current.version";
+            const string ExeUrl = @"https://github.com/aeshirey/Flambe/raw/master/Flambe.zip";
             var currentVersion = typeof(formMain).Assembly.GetName().Version;
             var currentStr = string.Format("{0}.{1}.{2}", currentVersion.Major, currentVersion.Minor, currentVersion.Build);
 

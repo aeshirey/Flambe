@@ -7,26 +7,28 @@
     {
         public Recipe Parent;
 
-        [PrimaryKey, AutoIncrement]
-        public int InstructionId { get; set; }
-        public int RecipeId { get; set; }
+        [PrimaryKey]
+        public Guid InstructionId { get; set; }
+        public Guid RecipeId { get; set; }
         public int InstructionOrder { get; set; }
         public string Text { get; set; }
 
         public Instruction()
         {
+            InstructionId = Guid.NewGuid();
         }
 
         public Instruction(Recipe recipe)
         {
+            InstructionId = Guid.NewGuid();
             Parent = recipe;
         }
 
         public void Commit()
         {
-            if (this.RecipeId == 0)
+            if (this.RecipeId == null || this.RecipeId == Guid.Empty)
             {
-                if (Parent == null || Parent.RecipeId == 0)
+                if (Parent == null || Parent.RecipeId == Guid.Empty)
                 {
                     throw new InvalidOperationException("Can't get parent recipe id");
                 }
@@ -34,7 +36,7 @@
                 this.RecipeId = Parent.RecipeId;
             }
 
-            if (this.InstructionId == 0)
+            if (this.InstructionId == null || this.InstructionId == Guid.Empty)
             {
                 FlambeDB.DbConnection.Insert(this);
             }
@@ -43,15 +45,15 @@
                 FlambeDB.DbConnection.Update(this);
             }
         }
-        
-        internal void Delete()
-        {
-            if (this.InstructionId == 0)
-            {
-                return;
-            }
 
-            FlambeDB.DbConnection.Delete<Instruction>(this.InstructionId);
-        }
+        //internal void Delete()
+        //{
+        //    if (this.InstructionId == null || this.InstructionId == Guid.Empty)
+        //    {
+        //        return;
+        //    }
+
+        //    FlambeDB.DbConnection.Delete<Instruction>(this.InstructionId);
+        //}
     }
 }

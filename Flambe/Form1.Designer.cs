@@ -336,6 +336,7 @@
             this.lvIngredients.TabIndex = 0;
             this.lvIngredients.UseCompatibleStateImageBehavior = false;
             this.lvIngredients.ItemSelectionChanged += new System.Windows.Forms.ListViewItemSelectionChangedEventHandler(this.lvIngredients_ItemSelectionChanged);
+            this.lvIngredients.MouseDown += new System.Windows.Forms.MouseEventHandler(this.lvIngredients_MouseDown);
             // 
             // tbCookTime
             // 

@@ -107,26 +107,26 @@
                         return;
                     }
 
-                    var downloadStats = await Recipe.DownloadRecipe(dd.tbRecipeId.Text);
+                    Guid recipeId;
+                    if (!Guid.TryParse(dd.tbRecipeId.Text, out recipeId))
+                    {
+                        var msg = string.Format("The given recipe ID was not valid. Please confirm the ID and try again.");
+                        MessageBox.Show(msg, "Invalid Recipe ID");
+                    }
 
-                    if (downloadStats.Item1 > 0)
+                    var downloadSuccess = await Recipe.DownloadRecipe(recipeId);
+
+                    if (downloadSuccess)
                     {
                         displayRecipes();
 
-                        if (downloadStats.Item1 != downloadStats.Item2)
-                        {
-                            var msg = string.Format("{0} out of {1} downloads succeeded", downloadStats.Item1, downloadStats.Item2);
-                            MessageBox.Show(msg, "Download partially successful");
-                        }
-                        else
-                        {
-                            var msg = string.Format("{0} download{1} succeeded", downloadStats.Item1, downloadStats.Item1 == 1 ? string.Empty : "s");
-                            MessageBox.Show(msg, "Download successful");
-                        }
+                        var msg = string.Format("Download succeeded");
+                        MessageBox.Show(msg, "Download successful");
+
                     }
                     else
                     {
-                        var msg = string.Format("Download failed. Please check the id(s) of the recipe(s) you want to download.");
+                        var msg = string.Format("Download failed. Please check the id of the recipe you want to download.");
                         MessageBox.Show(msg, "Download failed");
                     }
                 });

@@ -1,6 +1,7 @@
 ﻿namespace Flambe
 {
     using System;
+    using System.Drawing;
     using System.Linq;
     using System.Windows.Forms;
 
@@ -50,10 +51,8 @@
                     var response = MessageBox.Show("Are you sure you want to delete this ingredient?", "Delete ingredient?", MessageBoxButtons.YesNo);
                     if (response == System.Windows.Forms.DialogResult.Yes)
                     {
-                        if (ingredient.Delete())
-                        {
-                            lvIngredients.Items.RemoveAt(((ListView)sender).SelectedIndices[0]);
-                        }
+                        FlambeDB.DbConnection.Delete(ingredient);
+                        lvIngredients.Items.RemoveAt(((ListView)sender).SelectedIndices[0]);
                     }
                 });
                 cm.MenuItems.Add(mi);
@@ -86,7 +85,8 @@
 
             // TODO: ensure we don't bloat the Instructions table with orphaned rows
             currentRecipe.Instructions = tbInstructions.Text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-                .Select((t, i) => new Instruction(currentRecipe) { Text = t, InstructionId = i, Parent = currentRecipe }).ToList();
+                .Select((t, i) => new Instruction(currentRecipe) { Text = t })
+                .ToList();
 
             currentRecipe.Commit();
 
@@ -164,6 +164,8 @@
                     tbItem.Text =
                     tbRemarks.Text = string.Empty;
                 cbIsOptional.Checked = false;
+
+                currentIngredient = null;
             }
             else
             {
@@ -174,6 +176,42 @@
                 tbItem.Text = ingredient.Item;
                 tbRemarks.Text = ingredient.Remarks;
                 cbIsOptional.Checked = ingredient.IsOptional;
+
+                currentIngredient = ingredient;
+            }
+        }
+
+        private void lvIngredients_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            {
+                Ingredient selectedIngredient = null;
+                foreach (ListViewItem item in lvIngredients.Items)
+                {
+                    if (item.Bounds.Contains(new Point(e.X, e.Y)))
+                    {
+                        selectedIngredient = item.Tag as Ingredient;
+                        break;
+                    }
+                }
+
+                if (selectedIngredient == null)
+                {
+                    return;
+                }
+
+                var cm = new ContextMenu();
+                var mi = new MenuItem("&Delete");
+                mi.Click += new EventHandler((obj, args) =>
+                {
+                    currentRecipe.Ingredients.Remove(selectedIngredient);
+
+                    RefreshIngredientList();
+                });
+                cm.MenuItems.Add(mi);
+
+
+                ContextMenu = cm;
             }
         }
     }

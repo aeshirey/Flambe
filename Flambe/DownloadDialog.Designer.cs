@@ -1,7 +1,7 @@
 ﻿namespace Flambe
 {
     /// <summary>
-    /// A dialog used for downloading recipes from flambe.dingostick.com/recipes
+    /// A dialog used for downloading recipes from the official website
     /// </summary>
     public partial class DownloadDialog
     {
@@ -47,15 +47,17 @@
             this.tbRecipeId.Location = new System.Drawing.Point(12, 32);
             this.tbRecipeId.MaxLength = 200;
             this.tbRecipeId.Name = "tbRecipeId";
-            this.tbRecipeId.Size = new System.Drawing.Size(209, 20);
+            this.tbRecipeId.Size = new System.Drawing.Size(262, 20);
             this.tbRecipeId.TabIndex = 0;
+            this.tbRecipeId.TextChanged += new System.EventHandler(this.tbRecipeId_TextChanged);
             this.tbRecipeId.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbRecipeId_KeyDown);
             // 
             // btnDownload
             // 
             this.btnDownload.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDownload.DialogResult = System.Windows.Forms.DialogResult.OK;
-            this.btnDownload.Location = new System.Drawing.Point(227, 29);
+            this.btnDownload.Enabled = false;
+            this.btnDownload.Location = new System.Drawing.Point(280, 29);
             this.btnDownload.Name = "btnDownload";
             this.btnDownload.Size = new System.Drawing.Size(75, 23);
             this.btnDownload.TabIndex = 2;
@@ -64,8 +66,9 @@
             // 
             // btnCancel
             // 
+            this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(309, 29);
+            this.btnCancel.Location = new System.Drawing.Point(362, 29);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(51, 23);
             this.btnCancel.TabIndex = 3;
@@ -75,13 +78,13 @@
             // linkLabel1
             // 
             this.linkLabel1.AutoSize = true;
-            this.linkLabel1.LinkArea = new System.Windows.Forms.LinkArea(10, 19);
+            this.linkLabel1.LinkArea = new System.Windows.Forms.LinkArea(10, 16);
             this.linkLabel1.Location = new System.Drawing.Point(12, 12);
             this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(253, 17);
+            this.linkLabel1.Size = new System.Drawing.Size(240, 17);
             this.linkLabel1.TabIndex = 4;
             this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "Enter the online recipe id(s) you wish to download";
+            this.linkLabel1.Text = "Enter the online recipe id you wish to download";
             this.linkLabel1.UseCompatibleTextRendering = true;
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
@@ -89,7 +92,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(372, 63);
+            this.ClientSize = new System.Drawing.Size(425, 63);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnDownload);

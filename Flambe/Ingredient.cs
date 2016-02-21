@@ -7,9 +7,9 @@
     {
         public Recipe Parent;
 
-        [PrimaryKey, AutoIncrement]
-        public int IngredientId { get; set; }
-        public int RecipeId { get; set; }
+        [PrimaryKey]
+        public Guid IngredientId { get; set; }
+        public Guid RecipeId { get; set; }
         public string Quantity { get; set; }
         public string Units { get; set; }
         public string Item { get; set; }
@@ -20,32 +20,34 @@
         public int IngredientOrder { get; set; }
 
         public Ingredient()
-        { 
+        {
+            IngredientId = Guid.NewGuid();
         }
 
         public Ingredient(Recipe recipe)
         {
+            IngredientId = Guid.NewGuid();
             Parent = recipe;
         }
 
-        public bool Delete()
-        {
-            if (IngredientId == 0)
-            {
-                return false;
-            }
+        //public bool Delete()
+        //{
+        //    if (IngredientId == null || IngredientId == Guid.Empty)
+        //    {
+        //        return false;
+        //    }
 
-            FlambeDB.DbConnection.Delete<Ingredient>(this.IngredientId);
+        //    FlambeDB.DbConnection.Delete<Ingredient>(this.IngredientId);
 
-            Parent.Ingredients.Remove(this);
-            return true;
-        }
+        //    Parent.Ingredients.Remove(this);
+        //    return true;
+        //}
 
         public void Commit()
         {
-            if (RecipeId == 0)
+            if (RecipeId == null || RecipeId == Guid.Empty)
             {
-                if (Parent == null || Parent.RecipeId == 0)
+                if (Parent == null || Parent.RecipeId == null || Parent.RecipeId == Guid.Empty)
                 {
                     throw new InvalidOperationException("Can't get parent recipe id");
                 }
@@ -53,14 +55,7 @@
                 RecipeId = Parent.RecipeId;
             }
 
-            if (IngredientId == 0)
-            {
-                IngredientId = FlambeDB.DbConnection.Insert(this);
-            }
-            else
-            {
-                FlambeDB.DbConnection.Update(this);
-            }
+            FlambeDB.DbConnection.InsertOrReplace(this);
         }
     }
 }

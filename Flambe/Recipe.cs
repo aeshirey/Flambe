@@ -13,11 +13,12 @@
 
     public class Recipe
     {
-        public const string JsonUrl = "http://flambe.dingostick.com/recipes/json.php?rowid={0}";
-        public const string CardUrl = "http://flambe.dingostick.com/recipes/view.php?rowid={0}";
+        public const string ApiGetUrl = "http://flambe.azurewebsites.net/api/get/{0}";
+        public const string ApiUploadUrl = "http://flambe.azurewebsites.net/api/upload";
+        public const string CardUrl = "http://flambe.azurewebsites.net/recipe/{0}";
 
-        [PrimaryKey, AutoIncrement]
-        public int RecipeId { get; set; }
+        [PrimaryKey]
+        public Guid RecipeId { get; set; }
         public string Name { get; set; }
         public string Credit { get; set; }
         public string Comment { get; set; }
@@ -27,8 +28,9 @@
         public string PrepTime { get; set; }
         public string CookTime { get; set; }
         public float Rating { get; set; }
-        public List<Ingredient> Ingredients;
-        public List<Instruction> Instructions;
+
+        public IList<Ingredient> Ingredients;
+        public IList<Instruction> Instructions;
 
         public Recipe()
         {
@@ -41,43 +43,12 @@
         /// </summary>
         /// <param name="recipeIds">A string containing comma-separated ids and ranges, such as "90140, 90110-90112, 99055"</param>
         /// <returns>A Tuple&lt;int,int&gt; indicating how many downloads succeeded and how many were attempted</returns>
-        public static async Task<Tuple<int, int>> DownloadRecipe(string recipeIds)
+        public static async Task<Tuple<int, int>> DownloadRecipe(IEnumerable<Guid> recipeIds)
         {
-            var csvs = recipeIds.Split(new[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
-
-            var allIds = new List<int>();
-
-            int succeeded = 0, attempted = 0;
-            foreach (var csv in csvs)
+            int attempted = 0, succeeded = 0;
+            foreach (var recipeId in recipeIds)
             {
-                if (csv.Count(c => c == '-') > 1)
-                {
-                    continue;
-                }
-
-                if (csv.IndexOf('-') == -1)
-                {
-                    int id;
-                    if (int.TryParse(csv.Trim(), out id))
-                    {
-                        allIds.Add(id);
-                    }
-                }
-                else
-                {
-                    var bounds = csv.Split('-');
-
-                    int low, high;
-                    if (int.TryParse(bounds[0], out low) && int.TryParse(bounds[1], out high) && low <= high)
-                    {
-                        allIds.AddRange(Enumerable.Range(low, high - low + 1));
-                    }
-                }
-            }
-
-            foreach (var id in allIds)
-            {
-                if (await DownloadRecipe(id))
+                if (await DownloadRecipe(recipeId))
                 {
                     succeeded++;
                 }
@@ -88,38 +59,37 @@
             return new Tuple<int, int>(succeeded, attempted);
         }
 
-        public static async Task<bool> DownloadRecipe(int recipeId)
+        public static async Task<bool> DownloadRecipe(Guid recipeId)
         {
-            var url = string.Format(JsonUrl, recipeId);
+            var url = string.Format(ApiGetUrl, recipeId);
 
             using (var client = new HttpClient())
             {
-                var response = client.GetAsync(new Uri(url)).Result;
+                var response = await client.GetAsync(new Uri(url));
+
                 if (response.IsSuccessStatusCode)
                 {
                     var json = await response.Content.ReadAsStringAsync();
 
                     Recipe deserialized = FromJson(json.Trim());
-                    
+
                     if (deserialized == null)
                     {
                         return false;
                     }
 
-                    // setup for committing
-                    deserialized.RecipeId = 0;
 
-                    foreach (var ingredient in deserialized.Ingredients)
-                    {
-                        ingredient.Parent = deserialized;
-                        ingredient.RecipeId = 0;
-                    }
+                    //foreach (var ingredient in deserialized.Ingredients)
+                    //{
+                    //    ingredient.Parent = deserialized;
+                    //    ingredient.RecipeId = Guid.Empty;
+                    //}
 
-                    foreach (var instruction in deserialized.Instructions)
-                    {
-                        instruction.Parent = deserialized;
-                        instruction.RecipeId = 0;
-                    }
+                    //foreach (var instruction in deserialized.Instructions)
+                    //{
+                    //    instruction.Parent = deserialized;
+                    //    instruction.RecipeId = Guid.Empty;
+                    //}
 
                     deserialized.Commit();
                     return true;
@@ -131,54 +101,61 @@
 
         public void Commit()
         {
-            if (this.RecipeId == 0)
+            FlambeDB.DbConnection.InsertOrReplace(this);
+            //if (this.RecipeId == Guid.Empty)
+            //{
+            //    FlambeDB.DbConnection.Insert(this);
+            //}
+            //else
+            //{
+            //    FlambeDB.DbConnection.Update(this);
+            //}
+
+            foreach (var ingredient in this.Ingredients)
             {
-                FlambeDB.DbConnection.Insert(this);
-            }
-            else
-            {
-                FlambeDB.DbConnection.Update(this);
+                ingredient.RecipeId = RecipeId;
+                FlambeDB.DbConnection.InsertOrReplace(ingredient);
             }
 
-            for (var i = 0; i < this.Ingredients.Count; i++)
+            foreach (var instruction in this.Instructions)
             {
-                this.Ingredients[i].IngredientOrder = i + 1;
-                this.Ingredients[i].Commit();
+                instruction.RecipeId = RecipeId;
+                FlambeDB.DbConnection.InsertOrReplace(instruction);
             }
 
-            for (var i = 0; i < this.Instructions.Count; i++)
-            {
-                this.Instructions[i].InstructionOrder = i + 1;
-                this.Instructions[i].Commit();
-            }
+            //for (var i = 0; i < this.Ingredients.Count; i++)
+            //{
+            //    this.Ingredients[i].IngredientOrder = i + 1;
+            //    this.Ingredients[i].Commit();
+            //}
+
+            //for (var i = 0; i < this.Instructions.Count; i++)
+            //{
+            //    this.Instructions[i].InstructionOrder = i + 1;
+            //    this.Instructions[i].Commit();
+            //}
         }
 
         public void LoadChildren()
         {
-            if (Instructions == null || Instructions.Count == 0)
-            {
-                Instructions = FlambeDB.DbConnection.Table<Instruction>()
-                    .Where(i => i.RecipeId == RecipeId)
-                    .OrderBy(i => i.InstructionOrder)
-                    .ToList();
+            Instructions = FlambeDB.DbConnection.Table<Instruction>()
+                .Where(i => i.RecipeId == RecipeId)
+                .OrderBy(i => i.InstructionOrder)
+                .ToList();
 
-                foreach (var instruction in Instructions)
-                {
-                    instruction.Parent = this;
-                }
+            foreach (var instruction in Instructions)
+            {
+                instruction.Parent = this;
             }
 
-            if (Ingredients == null || Ingredients.Count == 0)
-            {
-                Ingredients = FlambeDB.DbConnection.Table<Ingredient>()
-                    .Where(i => i.RecipeId == RecipeId)
-                    .OrderBy(i => i.IngredientOrder)
-                    .ToList();
+            Ingredients = FlambeDB.DbConnection.Table<Ingredient>()
+                .Where(i => i.RecipeId == RecipeId)
+                .OrderBy(i => i.IngredientOrder)
+                .ToList();
 
-                foreach (var ingredient in Ingredients)
-                {
-                    ingredient.Parent = this;
-                }
+            foreach (var ingredient in Ingredients)
+            {
+                ingredient.Parent = this;
             }
         }
 
@@ -255,12 +232,13 @@
         {
             foreach (var ingredient in this.Ingredients)
             {
-                ingredient.Delete();
+                FlambeDB.DbConnection.Delete(ingredient);
             }
 
             foreach (var instruction in this.Instructions)
             {
-                instruction.Delete();
+                FlambeDB.DbConnection.Delete(instruction);
+                //instruction.Delete();
             }
 
             FlambeDB.DbConnection.Delete<Recipe>(this.RecipeId);
@@ -275,7 +253,7 @@
                     { "json", ToJson() }
                 };
 
-                var response = client.UploadValues(string.Format(JsonUrl, 0), payload);
+                var response = client.UploadValues(ApiUploadUrl, payload);
                 var decoded = Encoding.UTF8.GetString(response);
 
                 int result;
