@@ -10,6 +10,7 @@
     using System.Threading.Tasks;
     using System.Web.Script.Serialization;
     using SQLite;
+    using System.IO;
 
     public class Recipe
     {
@@ -244,20 +245,45 @@
             FlambeDB.DbConnection.Delete<Recipe>(this.RecipeId);
         }
 
-        internal int? Upload()
+        internal Guid? Upload()
         {
-            using (var client = new WebClient())
+            //using (var client = new WebClient())
+            //{
+            //    var payload = new NameValueCollection()
+            //    {
+            //        { "json", ToJson() }
+            //    };
+
+            //    var response = client.UploadValues(ApiUploadUrl, payload);
+            //    var decoded = Encoding.UTF8.GetString(response);
+
+            //    int result;
+            //    return int.TryParse(decoded, out result) ? result : (int?)null;
+            //}
+
+
+
+            var webRequest = (HttpWebRequest)WebRequest.Create(ApiUploadUrl);
+            webRequest.Method = "POST";
+            webRequest.MediaType = "application/json";
+            webRequest.Accept = "application/json";
+            webRequest.ContentType = "application/json";
+
+            using (var stream = webRequest.GetRequestStream())
             {
-                var payload = new NameValueCollection()
-                {
-                    { "json", ToJson() }
-                };
+                var json = ToJson();
+                var jsonBytes = Encoding.UTF8.GetBytes(json);
 
-                var response = client.UploadValues(ApiUploadUrl, payload);
-                var decoded = Encoding.UTF8.GetString(response);
+                stream.Write(jsonBytes, 0, jsonBytes.Length);
+            }
 
-                int result;
-                return int.TryParse(decoded, out result) ? result : (int?)null;
+            var resp = (HttpWebResponse)webRequest.GetResponse();
+            using (var respStream = new StreamReader(resp.GetResponseStream()))
+            {
+                var response = respStream.ReadToEnd();
+
+                Guid recipeId;
+                return Guid.TryParse(response, out recipeId) ? recipeId : (Guid?)null;
             }
         }
 

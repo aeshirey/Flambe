@@ -59,7 +59,7 @@
                     mi = new MenuItem("Uplo&ad recipe") { Tag = selectedRecipe };
                     mi.Click += new EventHandler((obj, args) =>
                     {
-                        int? onlineId = selectedRecipe.Upload();
+                        Guid? onlineId = selectedRecipe.Upload();
                         if (onlineId.HasValue)
                         {
                             Process.Start(string.Format(Recipe.CardUrl, onlineId.Value));
