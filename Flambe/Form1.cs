@@ -17,6 +17,7 @@
     {
         private Recipe currentRecipe;
         private Ingredient currentIngredient;
+        private FlambeDB flambeConnection;
 
         #region Initialization
         public formMain()
@@ -53,7 +54,7 @@
                 tbRemarks.Left = tbItem.Left + tbItem.Width + 3;
             });
 
-            FlambeDB.LoadDB();
+            this.flambeConnection = new FlambeDB();
 
             displayRecipes();
             initComboBoxes();
@@ -63,7 +64,7 @@
 
         protected override void OnClosing(CancelEventArgs e)
         {
-            FlambeDB.CloseDB();
+            this.flambeConnection.Close();
             base.OnClosing(e);
         }
 
@@ -77,7 +78,7 @@
             var categories = new HashSet<string>();
             var servings = new HashSet<string>();
 
-            foreach (var recipe in FlambeDB.DbConnection.Table<Recipe>())
+            foreach (var recipe in this.flambeConnection.Table<Recipe>())
             {
                 credits.Add(recipe.Credit);
                 cuisines.Add(recipe.Cuisine);
@@ -98,7 +99,7 @@
 
             // ingredients auto-complete
             var itemAC = new AutoCompleteStringCollection();
-            var ingredients = FlambeDB.DbConnection.Table<Ingredient>().ToList();
+            var ingredients = this.flambeConnection.Table<Ingredient>().ToList();
             itemAC.AddRange(ingredients
                 .Select(ing => ing.Item)
                 .Where(item => !string.IsNullOrWhiteSpace(item))
@@ -164,7 +165,7 @@
             }
 
             lvAllRecipes.Items.Clear();
-            foreach (var recipe in FlambeDB.DbConnection.Query<Recipe>(query))
+            foreach (var recipe in this.flambeConnection.Query<Recipe>(query))
             {
                 var item = new ListViewItem(new[]
                 {
@@ -243,7 +244,7 @@
                 tbPrepTime.Text = recipe.PrepTime;
                 tbComment.Text = recipe.Comment;
 
-                recipe.LoadChildren();
+                recipe.LoadChildren(this.flambeConnection);
 
                 lvIngredients.Items.Clear();
                 foreach (var ingredient in recipe.Ingredients)

@@ -35,6 +35,7 @@
 
         public Recipe()
         {
+            this.RecipeId = Guid.NewGuid();
             this.Ingredients = new List<Ingredient>();
             this.Instructions = new List<Instruction>();
         }
@@ -44,12 +45,12 @@
         /// </summary>
         /// <param name="recipeIds">A string containing comma-separated ids and ranges, such as "90140, 90110-90112, 99055"</param>
         /// <returns>A Tuple&lt;int,int&gt; indicating how many downloads succeeded and how many were attempted</returns>
-        public static async Task<Tuple<int, int>> DownloadRecipe(IEnumerable<Guid> recipeIds)
+        public static async Task<Tuple<int, int>> DownloadRecipe(IEnumerable<Guid> recipeIds, SQLiteConnection connection)
         {
             int attempted = 0, succeeded = 0;
             foreach (var recipeId in recipeIds)
             {
-                if (await DownloadRecipe(recipeId))
+                if (await DownloadRecipe(recipeId, connection))
                 {
                     succeeded++;
                 }
@@ -60,7 +61,7 @@
             return new Tuple<int, int>(succeeded, attempted);
         }
 
-        public static async Task<bool> DownloadRecipe(Guid recipeId)
+        public static async Task<bool> DownloadRecipe(Guid recipeId, SQLiteConnection connection)
         {
             var url = string.Format(ApiGetUrl, recipeId);
 
@@ -92,7 +93,7 @@
                     //    instruction.RecipeId = Guid.Empty;
                     //}
 
-                    deserialized.Commit();
+                    deserialized.Commit(connection);
                     return true;
                 }
             }
@@ -100,9 +101,9 @@
             return false;
         }
 
-        public void Commit()
+        public void Commit(SQLiteConnection connection)
         {
-            FlambeDB.DbConnection.InsertOrReplace(this);
+            connection.InsertOrReplace(this);
             //if (this.RecipeId == Guid.Empty)
             //{
             //    FlambeDB.DbConnection.Insert(this);
@@ -115,13 +116,13 @@
             foreach (var ingredient in this.Ingredients)
             {
                 ingredient.RecipeId = RecipeId;
-                FlambeDB.DbConnection.InsertOrReplace(ingredient);
+                connection.InsertOrReplace(ingredient);
             }
 
             foreach (var instruction in this.Instructions)
             {
                 instruction.RecipeId = RecipeId;
-                FlambeDB.DbConnection.InsertOrReplace(instruction);
+                connection.InsertOrReplace(instruction);
             }
 
             //for (var i = 0; i < this.Ingredients.Count; i++)
@@ -137,9 +138,9 @@
             //}
         }
 
-        public void LoadChildren()
+        public void LoadChildren(SQLiteConnection connection)
         {
-            Instructions = FlambeDB.DbConnection.Table<Instruction>()
+            Instructions = connection.Table<Instruction>()
                 .Where(i => i.RecipeId == RecipeId)
                 .OrderBy(i => i.InstructionOrder)
                 .ToList();
@@ -149,7 +150,7 @@
                 instruction.Parent = this;
             }
 
-            Ingredients = FlambeDB.DbConnection.Table<Ingredient>()
+            Ingredients = connection.Table<Ingredient>()
                 .Where(i => i.RecipeId == RecipeId)
                 .OrderBy(i => i.IngredientOrder)
                 .ToList();
@@ -229,20 +230,20 @@
             return serialized;
         }
 
-        internal void Delete()
+        internal void Delete(SQLiteConnection connection)
         {
             foreach (var ingredient in this.Ingredients)
             {
-                FlambeDB.DbConnection.Delete(ingredient);
+                connection.Delete(ingredient);
             }
 
             foreach (var instruction in this.Instructions)
             {
-                FlambeDB.DbConnection.Delete(instruction);
+                connection.Delete(instruction);
                 //instruction.Delete();
             }
 
-            FlambeDB.DbConnection.Delete<Recipe>(this.RecipeId);
+            connection.Delete<Recipe>(this.RecipeId);
         }
 
         internal Guid? Upload()

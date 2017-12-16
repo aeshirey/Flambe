@@ -43,7 +43,7 @@
         //    return true;
         //}
 
-        public void Commit()
+        public void Commit(SQLiteConnection connection)
         {
             if (RecipeId == null || RecipeId == Guid.Empty)
             {
@@ -55,7 +55,7 @@
                 RecipeId = Parent.RecipeId;
             }
 
-            FlambeDB.DbConnection.InsertOrReplace(this);
+            connection.InsertOrReplace(this);
         }
     }
 }

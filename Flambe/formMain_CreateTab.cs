@@ -51,7 +51,7 @@
                     var response = MessageBox.Show("Are you sure you want to delete this ingredient?", "Delete ingredient?", MessageBoxButtons.YesNo);
                     if (response == System.Windows.Forms.DialogResult.Yes)
                     {
-                        FlambeDB.DbConnection.Delete(ingredient);
+                        this.flambeConnection.Delete(ingredient);
                         lvIngredients.Items.RemoveAt(((ListView)sender).SelectedIndices[0]);
                     }
                 });
@@ -85,10 +85,10 @@
 
             // TODO: ensure we don't bloat the Instructions table with orphaned rows
             currentRecipe.Instructions = tbInstructions.Text.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries)
-                .Select((t, i) => new Instruction(currentRecipe) { Text = t })
+                .Select((t, i) => new Instruction(currentRecipe) { Text = t, InstructionOrder = i })
                 .ToList();
 
-            currentRecipe.Commit();
+            currentRecipe.Commit(this.flambeConnection);
 
             // move back to the search page and refresh the list
             displayRecipes();
@@ -107,7 +107,7 @@
 
         private void allIngredients_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar != 13)
+            if (e.KeyChar != (char)Keys.Enter)
             {
                 return;
             }
@@ -151,6 +151,8 @@
 
             tbQuantity.Text = tbUnits.Text = tbItem.Text = tbRemarks.Text = string.Empty;
             currentIngredient = null;
+
+            tbQuantity.Focus();
 
             RefreshIngredientList();
         }

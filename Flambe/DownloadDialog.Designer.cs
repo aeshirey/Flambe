@@ -44,10 +44,11 @@
             // 
             this.tbRecipeId.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.tbRecipeId.Location = new System.Drawing.Point(12, 32);
+            this.tbRecipeId.Location = new System.Drawing.Point(24, 62);
+            this.tbRecipeId.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.tbRecipeId.MaxLength = 200;
             this.tbRecipeId.Name = "tbRecipeId";
-            this.tbRecipeId.Size = new System.Drawing.Size(262, 20);
+            this.tbRecipeId.Size = new System.Drawing.Size(520, 31);
             this.tbRecipeId.TabIndex = 0;
             this.tbRecipeId.TextChanged += new System.EventHandler(this.tbRecipeId_TextChanged);
             this.tbRecipeId.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbRecipeId_KeyDown);
@@ -57,9 +58,10 @@
             this.btnDownload.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnDownload.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnDownload.Enabled = false;
-            this.btnDownload.Location = new System.Drawing.Point(280, 29);
+            this.btnDownload.Location = new System.Drawing.Point(560, 56);
+            this.btnDownload.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.btnDownload.Name = "btnDownload";
-            this.btnDownload.Size = new System.Drawing.Size(75, 23);
+            this.btnDownload.Size = new System.Drawing.Size(150, 44);
             this.btnDownload.TabIndex = 2;
             this.btnDownload.Text = "&Download";
             this.btnDownload.UseVisualStyleBackColor = true;
@@ -68,9 +70,10 @@
             // 
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.btnCancel.Location = new System.Drawing.Point(362, 29);
+            this.btnCancel.Location = new System.Drawing.Point(724, 56);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(51, 23);
+            this.btnCancel.Size = new System.Drawing.Size(102, 44);
             this.btnCancel.TabIndex = 3;
             this.btnCancel.Text = "&Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
@@ -79,9 +82,10 @@
             // 
             this.linkLabel1.AutoSize = true;
             this.linkLabel1.LinkArea = new System.Windows.Forms.LinkArea(10, 16);
-            this.linkLabel1.Location = new System.Drawing.Point(12, 12);
+            this.linkLabel1.Location = new System.Drawing.Point(24, 23);
+            this.linkLabel1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(240, 17);
+            this.linkLabel1.Size = new System.Drawing.Size(458, 30);
             this.linkLabel1.TabIndex = 4;
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "Enter the online recipe id you wish to download";
@@ -90,13 +94,14 @@
             // 
             // DownloadDialog
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 25F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(425, 63);
+            this.ClientSize = new System.Drawing.Size(850, 121);
             this.Controls.Add(this.linkLabel1);
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnDownload);
             this.Controls.Add(this.tbRecipeId);
+            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.Name = "DownloadDialog";
             this.Text = "Download Recipe";
             this.ResumeLayout(false);

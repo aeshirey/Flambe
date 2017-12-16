@@ -24,7 +24,7 @@
             Parent = recipe;
         }
 
-        public void Commit()
+        public void Commit(SQLiteConnection connection)
         {
             if (this.RecipeId == null || this.RecipeId == Guid.Empty)
             {
@@ -38,11 +38,11 @@
 
             if (this.InstructionId == null || this.InstructionId == Guid.Empty)
             {
-                FlambeDB.DbConnection.Insert(this);
+                connection.Insert(this);
             }
             else
             {
-                FlambeDB.DbConnection.Update(this);
+                connection.Update(this);
             }
         }
 

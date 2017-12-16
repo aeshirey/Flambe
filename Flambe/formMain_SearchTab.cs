@@ -14,7 +14,7 @@
         {
             var item = lvAllRecipes.SelectedItems[0];
             currentRecipe = item.Tag as Recipe;
-            currentRecipe.LoadChildren();
+            currentRecipe.LoadChildren(this.flambeConnection);
 
             // load the recipe for easy editing, too
             EditRecipe(currentRecipe, switchTabs: false);
@@ -25,7 +25,7 @@
 
         private void lvAllRecipes_MouseClick(object sender, MouseEventArgs e)
         {
-            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            if (e.Button == MouseButtons.Right)
             {
                 bool isShift = Control.ModifierKeys.HasFlag(Keys.Shift);
 
@@ -44,16 +44,17 @@
                 MenuItem mi;
                 if (selectedRecipe != null)
                 {
-                    selectedRecipe.LoadChildren();
+                    selectedRecipe.LoadChildren(this.flambeConnection);
 
                     mi = new MenuItem("Open re&cipe", lvAllRecipes_DoubleClick) { Tag = selectedRecipe };
                     cm.MenuItems.Add(mi);
-
-                    ////mi = new MenuItem("P&rint recipe") { Tag = selectedRecipe };
-                    ////cm.MenuItems.Add(mi);
-
+                    
                     mi = new MenuItem("&Edit recipe") { Tag = selectedRecipe };
-                    mi.Click += new EventHandler((obj, args) => EditRecipe(selectedRecipe));
+                    mi.Click += new EventHandler((obj, args) =>
+                    {
+                        EditRecipe(selectedRecipe);
+                        tabControl.TabPages[2].Text = "Edit";
+                    });
                     cm.MenuItems.Add(mi);
 
                     mi = new MenuItem("Uplo&ad recipe") { Tag = selectedRecipe };
@@ -82,7 +83,7 @@
                                 }
                             }
 
-                            taggedRecipe.Delete();
+                            taggedRecipe.Delete(this.flambeConnection);
                         }
                     });
                     cm.MenuItems.Add(mi);
@@ -91,8 +92,8 @@
                 mi = new MenuItem("&New recipe");
                 mi.Click += new EventHandler((obj, args) =>
                 {
-                    ClearRecipe();
-                    tabControl.SelectedIndex = 2;
+                    EditRecipe(null);
+                    tabControl.TabPages[2].Text = "Create";
                     tbName.Focus();
                 });
                 cm.MenuItems.Add(mi);
@@ -102,7 +103,7 @@
                 mi.Click += new EventHandler(async (obj, args) =>
                 {
                     var dd = new DownloadDialog();
-                    if (dd.ShowDialog(this) == System.Windows.Forms.DialogResult.Cancel)
+                    if (dd.ShowDialog(this) == DialogResult.Cancel)
                     {
                         return;
                     }
@@ -114,7 +115,7 @@
                         MessageBox.Show(msg, "Invalid Recipe ID");
                     }
 
-                    var downloadSuccess = await Recipe.DownloadRecipe(recipeId);
+                    var downloadSuccess = await Recipe.DownloadRecipe(recipeId, this.flambeConnection);
 
                     if (downloadSuccess)
                     {
@@ -122,7 +123,6 @@
 
                         var msg = string.Format("Download succeeded");
                         MessageBox.Show(msg, "Download successful");
-
                     }
                     else
                     {
@@ -148,7 +148,7 @@
                     mi = new MenuItem("Vac&uum Database");
                     mi.Click += new EventHandler((obj, args) =>
                     {
-                        FlambeDB.DbConnection.Execute("VACUUM");
+                        this.flambeConnection.Execute("VACUUM");
                     });
                     cm.MenuItems.Add(mi);
                 }
@@ -187,7 +187,7 @@
                 if (Control.ModifierKeys == Keys.Shift
                     || MessageBox.Show("Are you sure you want to delete '" + recipe.Name + "' from your database?", "Delete recipe?", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
                 {
-                    recipe.Delete();
+                    recipe.Delete(this.flambeConnection);
                     displayRecipes();
                 }
             }
@@ -197,9 +197,13 @@
         {
             if (lvAllRecipes.SelectedItems.Count == 0)
             {
+                tabControl.TabPages[2].Text = "Create";
+                EditRecipe(null, false);
                 return;
             }
 
+            EditRecipe(lvAllRecipes.SelectedItems[0].Tag as Recipe, false);
+            tabControl.TabPages[2].Text = "Edit";
             var recipe = lvAllRecipes.SelectedItems[0].Tag as Recipe;
             statusStrip1.Items[0].Text = recipe.Name + (string.IsNullOrEmpty(recipe.Credit) ? string.Empty : " by " + recipe.Credit);
         }

@@ -2,22 +2,16 @@
 {
     using SQLite;
 
-    public static class FlambeDB
+    public class FlambeDB : SQLiteConnection
     {
         public const string DatabaseFile = @"recipes.sqlite";
         public static SQLiteConnection DbConnection;
-        public static void LoadDB()
+        public FlambeDB(string databaseFile = DatabaseFile) : base(databaseFile)
         {
-            DbConnection = new SQLiteConnection(DatabaseFile);
-            DbConnection.CreateTable<Recipe>();
-            DbConnection.CreateTable<Instruction>();
-            DbConnection.CreateTable<Ingredient>();
-            DbConnection.Commit();
-        }
-
-        public static void CloseDB()
-        {
-            DbConnection.Close();
+            CreateTable<Recipe>();
+            CreateTable<Instruction>();
+            CreateTable<Ingredient>();
+            Commit();
         }
     }
 }
