@@ -230,6 +230,57 @@
             return serialized;
         }
 
+
+        public string ToText()
+        {
+            var sb = new StringBuilder();
+            sb.AppendLine(this.Name);
+
+
+            Func<string, string, bool> add = (k, v) => !string.IsNullOrEmpty(v)
+                    && sb.AppendLine($"{k}: {v}") != null;
+
+            add("Credit", this.Credit);
+            add("Comment", this.Comment);
+            add("Cuisine", this.Cuisine);
+            add("Category", this.Category);
+            add("Servings", this.Servings);
+            add("Prep Time", this.PrepTime);
+            add("Cook Time", this.CookTime);
+            add("Rating", 0 == this.Rating ? string.Empty : (Math.Round(this.Rating * 2) / 2).ToString());
+
+            if (this.Ingredients.Count > 0)
+            {
+                sb.AppendLine();
+                sb.AppendLine("Ingredients:");
+                foreach (var ingredient in this.Ingredients)
+                {
+                    var ingredientContent = ingredient.Quantity
+                        + (string.IsNullOrEmpty(ingredient.Units) ? string.Empty : " " + ingredient.Units)
+                        + (string.IsNullOrEmpty(ingredient.Item) ? string.Empty : " " + ingredient.Item)
+                        + (string.IsNullOrEmpty(ingredient.Remarks) ? string.Empty : ", " + ingredient.Remarks)
+                        + (ingredient.IsOptional ? " (optional" : string.Empty);
+                    sb.AppendLine("• " + ingredientContent);
+                }
+            }
+
+            if (this.Instructions.Count > 0)
+            {
+                sb.AppendLine();
+                sb.AppendLine("Instructions:");
+
+                for (var i = 0; i < this.Instructions.Count; i++)
+                {
+                    if (i != 0)
+                        sb.AppendLine();
+
+                    sb.AppendLine($"{i + 1}. {this.Instructions[i].Text}");
+                }
+            }
+
+            return sb.ToString();
+        }
+
         internal void Delete(SQLiteConnection connection)
         {
             foreach (var ingredient in this.Ingredients)

@@ -45,7 +45,7 @@
             this.tbRecipeId.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tbRecipeId.Location = new System.Drawing.Point(24, 62);
-            this.tbRecipeId.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.tbRecipeId.Margin = new System.Windows.Forms.Padding(6);
             this.tbRecipeId.MaxLength = 200;
             this.tbRecipeId.Name = "tbRecipeId";
             this.tbRecipeId.Size = new System.Drawing.Size(520, 31);
@@ -59,7 +59,7 @@
             this.btnDownload.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnDownload.Enabled = false;
             this.btnDownload.Location = new System.Drawing.Point(560, 56);
-            this.btnDownload.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.btnDownload.Margin = new System.Windows.Forms.Padding(6);
             this.btnDownload.Name = "btnDownload";
             this.btnDownload.Size = new System.Drawing.Size(150, 44);
             this.btnDownload.TabIndex = 2;
@@ -71,7 +71,7 @@
             this.btnCancel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Location = new System.Drawing.Point(724, 56);
-            this.btnCancel.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.btnCancel.Margin = new System.Windows.Forms.Padding(6);
             this.btnCancel.Name = "btnCancel";
             this.btnCancel.Size = new System.Drawing.Size(102, 44);
             this.btnCancel.TabIndex = 3;
@@ -101,7 +101,7 @@
             this.Controls.Add(this.btnCancel);
             this.Controls.Add(this.btnDownload);
             this.Controls.Add(this.tbRecipeId);
-            this.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.Margin = new System.Windows.Forms.Padding(6);
             this.Name = "DownloadDialog";
             this.Text = "Download Recipe";
             this.ResumeLayout(false);

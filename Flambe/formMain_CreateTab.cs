@@ -185,7 +185,7 @@
 
         private void lvIngredients_MouseDown(object sender, MouseEventArgs e)
         {
-            if (e.Button == System.Windows.Forms.MouseButtons.Right)
+            if (e.Button == MouseButtons.Right)
             {
                 Ingredient selectedIngredient = null;
                 foreach (ListViewItem item in lvIngredients.Items)

@@ -3,6 +3,7 @@
     using System;
     using System.Diagnostics;
     using System.Drawing;
+    using System.Media;
     using System.Windows.Forms;
 
     /// <summary>
@@ -48,7 +49,18 @@
 
                     mi = new MenuItem("Open re&cipe", lvAllRecipes_DoubleClick) { Tag = selectedRecipe };
                     cm.MenuItems.Add(mi);
-                    
+
+                    mi = new MenuItem("&Copy recipe text") { Tag = selectedRecipe };
+                    mi.Click += new EventHandler((obj, args) =>
+                    {
+                        var recipeText = selectedRecipe.ToText();
+                        Clipboard.SetText(recipeText);
+
+                        SystemSounds.Beep.Play();
+
+                    });
+                    cm.MenuItems.Add(mi);
+
                     mi = new MenuItem("&Edit recipe") { Tag = selectedRecipe };
                     mi.Click += new EventHandler((obj, args) =>
                     {
@@ -102,17 +114,30 @@
                 mi = new MenuItem("Download Recipe");
                 mi.Click += new EventHandler(async (obj, args) =>
                 {
-                    var dd = new DownloadDialog();
-                    if (dd.ShowDialog(this) == DialogResult.Cancel)
+                    Guid recipeId = Guid.Empty;
+
+                    // let's check if there's a URL in the clipboard
+                    var clipboardContents = Clipboard.ContainsText() ? Clipboard.GetText() : string.Empty;
+                    if (DownloadDialog.RecipeUrl.IsMatch(clipboardContents))
                     {
-                        return;
+                        var id = DownloadDialog.RecipeUrl.Match(clipboardContents).Groups[1].Value;
+                        Guid.TryParse(id, out recipeId);
                     }
 
-                    Guid recipeId;
-                    if (!Guid.TryParse(dd.tbRecipeId.Text, out recipeId))
+                    if (recipeId == Guid.Empty)
                     {
-                        var msg = string.Format("The given recipe ID was not valid. Please confirm the ID and try again.");
-                        MessageBox.Show(msg, "Invalid Recipe ID");
+                        var dd = new DownloadDialog();
+                        if (dd.ShowDialog(this) == DialogResult.Cancel)
+                        {
+                            return;
+                        }
+
+                        if (!Guid.TryParse(dd.tbRecipeId.Text, out recipeId))
+                        {
+                            var msg = string.Format("The given recipe ID was not valid. Please confirm the ID and try again.");
+                            MessageBox.Show(msg, "Invalid Recipe ID");
+                            return;
+                        }
                     }
 
                     var downloadSuccess = await Recipe.DownloadRecipe(recipeId, this.flambeConnection);
@@ -140,6 +165,7 @@
                         mi.Click += new EventHandler((obj, args) =>
                         {
                             var json = selectedRecipe.ToJson();
+                            Clipboard.SetText(json);
                             MessageBox.Show(json);
                         });
                         cm.MenuItems.Add(mi);
